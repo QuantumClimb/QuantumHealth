@@ -1,14 +1,19 @@
-User-agent: Googlebot
-Allow: /
-
-User-agent: Bingbot
-Allow: /
-
-User-agent: Twitterbot
-Allow: /
-
-User-agent: facebookexternalhit
-Allow: /
-
 User-agent: *
 Allow: /
+
+# Disallow admin and private areas
+Disallow: /admin/
+Disallow: /api/
+Disallow: /_next/
+Disallow: /private/
+
+# Allow important pages
+Allow: /login
+Allow: /patient/
+Allow: /doctor/
+
+# Sitemap location
+Sitemap: https://quantumhealth.quantum-climb.com/sitemap.xml
+
+# Crawl delay (optional)
+Crawl-delay: 1

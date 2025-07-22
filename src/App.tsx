@@ -10,14 +10,21 @@ import { initializeApp, getCurrentTenant, type Tenant } from '@/services/supabas
 import Index from "./pages/Index";
 import Login from "./pages/Login";
 import PatientDashboard from "./pages/PatientDashboard";
+import PatientProfile from "./pages/PatientProfile";
 import PatientReports from "./pages/PatientReports";
 import PatientReportUpload from "./pages/PatientReportUpload";
 import PatientSettings from "./pages/PatientSettings";
 import PatientMessages from "./pages/PatientMessages";
+import PatientAppointments from "./pages/PatientAppointments";
 import DoctorDashboard from "./pages/DoctorDashboard";
+import DoctorProfile from "./pages/DoctorProfile";
 import DoctorReports from "./pages/DoctorReports";
+import DoctorReportCreate from "./pages/DoctorReportCreate";
 import DoctorSettings from "./pages/DoctorSettings";
 import DoctorMessages from "./pages/DoctorMessages";
+import DoctorSchedule from "./pages/DoctorSchedule";
+import DoctorScheduleManage from "./pages/DoctorScheduleManage";
+import DoctorPatients from "./pages/DoctorPatients";
 import AppointmentBooking from "./pages/AppointmentBooking";
 import NotFound from "./pages/NotFound";
 
@@ -108,25 +115,26 @@ const App = () => {
                 
                 {/* Patient Routes */}
                 <Route path="/patient/dashboard" element={<PatientDashboard />} />
+                <Route path="/patient/profile" element={<PatientProfile />} />
                 <Route path="/patient/reports" element={<PatientReports />} />
                 <Route path="/patient/reports/upload" element={<PatientReportUpload />} />
                 <Route path="/patient/settings" element={<PatientSettings />} />
                 <Route path="/patient/messages" element={<PatientMessages />} />
-                
-                {/* Redirect /patient/appointments to the booking page for now */}
-                <Route path="/patient/appointments" element={<Navigate to="/patient/appointments/book" replace />} />
+                <Route path="/patient/appointments" element={<PatientAppointments />} />
                 <Route path="/patient/appointments/book" element={<AppointmentBooking />} />
                 
                 {/* Doctor Routes */}
                 <Route path="/doctor/dashboard" element={<DoctorDashboard />} />
+                <Route path="/doctor/profile" element={<DoctorProfile />} />
                 <Route path="/doctor/reports" element={<DoctorReports />} />
                 <Route path="/doctor/reports/upload" element={<PatientReportUpload />} />
+                <Route path="/doctor/reports/create/:id" element={<DoctorReportCreate />} />
                 <Route path="/doctor/settings" element={<DoctorSettings />} />
                 <Route path="/doctor/messages" element={<DoctorMessages />} />
-                
-                {/* Temporarily redirect missing doctor routes to dashboard */}
-                <Route path="/doctor/schedule" element={<Navigate to="/doctor/dashboard" replace />} />
-                <Route path="/doctor/patients" element={<Navigate to="/doctor/dashboard" replace />} />
+                <Route path="/doctor/schedule" element={<DoctorSchedule />} />
+                <Route path="/doctor/schedule/manage" element={<DoctorScheduleManage />} />
+                <Route path="/doctor/patients" element={<DoctorPatients />} />
+                <Route path="/doctor/patients/upload-report" element={<PatientReportUpload />} />
                 
                 {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
                 <Route path="*" element={<NotFound />} />

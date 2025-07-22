@@ -1,5 +1,5 @@
 {
-  "project_name": "QuantumHealth",
+  "project_name": "QUANTUM HEALTH",
   "project_type": "React TypeScript SPA",
   "variables": {
     "configuration": {
@@ -326,7 +326,7 @@
         "/assets/cb1258b0-cbdd-42f0-aa60-f8b0d52a3c5d.png",
         "/assets/0004c791-5028-4d5a-ac24-f6de320fc70b.png",
         "/assets/Favicon.png",
-        "/assets/Healthy_ShareImage.png"
+        "/assets/QuantumHealth_Logo.png"
       ],
       "external_urls": {
         "whatsapp_base": "https://wa.me/",

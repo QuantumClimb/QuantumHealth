@@ -13,7 +13,7 @@ const Navbar: React.FC<NavbarProps> = ({ userRole }) => {
       <div className="flex items-center justify-between">
         <Link to="/" className="flex items-center">
           <span className="text-2xl font-bold bg-gradient-to-r from-healthy-400 to-nature-500 text-transparent bg-clip-text">
-            HEALTHY
+            QUANTUM HEALTH
           </span>
         </Link>
         

@@ -34,16 +34,7 @@ export interface Tenant {
       max_api_calls_per_day?: number;
     };
   };
-  metadata?: Record<string, any>;
-}
-
-export interface TenantUser {
-  id: string;
-  tenant_id: string;
-  user_id: string;
-  role: 'owner' | 'admin' | 'member' | 'viewer';
-  created_at: string;
-  updated_at: string;
+  metadata?: Record<string, unknown>;
 }
 
 export interface PatientProfile {
@@ -56,19 +47,9 @@ export interface PatientProfile {
   phone?: string;
   date_of_birth?: string;
   gender?: 'male' | 'female' | 'other' | 'prefer_not_to_say';
-  address?: {
-    street?: string;
-    city?: string;
-    state?: string;
-    zip?: string;
-    country?: string;
-  };
-  emergency_contact?: {
-    name?: string;
-    relationship?: string;
-    phone?: string;
-  };
-  medical_history?: Record<string, any>;
+  address?: Record<string, unknown>;
+  emergency_contact?: Record<string, unknown>;
+  medical_history?: Record<string, unknown>;
   allergies?: string[];
   medications?: string[];
   created_at: string;
@@ -89,7 +70,7 @@ export interface DoctorProfile {
   experience_years?: number;
   qualifications?: string[];
   consultation_fee?: number;
-  availability?: Record<string, any>;
+  availability?: Record<string, unknown>;
   created_at: string;
   updated_at: string;
 }
@@ -107,7 +88,7 @@ export interface MedicalReport {
   file_format?: string;
   status: 'pending' | 'reviewed' | 'archived';
   description?: string;
-  metadata?: Record<string, any>;
+  metadata?: Record<string, unknown>;
   created_at: string;
   updated_at: string;
 }
@@ -119,14 +100,26 @@ export interface Appointment {
   doctor_id: string;
   appointment_date: string;
   appointment_time: string;
-  duration_minutes?: number;
-  status: 'scheduled' | 'confirmed' | 'completed' | 'cancelled' | 'no_show';
+  duration_minutes: number;
   appointment_type?: 'consultation' | 'follow_up' | 'emergency' | 'routine_check';
+  status: 'scheduled' | 'confirmed' | 'completed' | 'cancelled' | 'no_show';
   notes?: string;
   consultation_fee?: number;
   payment_status: 'pending' | 'paid' | 'cancelled';
   created_at: string;
   updated_at: string;
+}
+
+export interface Conversation {
+  id: string;
+  tenant_id: string;
+  participant_1_id: string;
+  participant_2_id: string;
+  participant_1_type?: 'patient' | 'doctor' | 'admin';
+  participant_2_type?: 'patient' | 'doctor' | 'admin';
+  last_message_at: string;
+  is_active: boolean;
+  created_at: string;
 }
 
 export interface Message {
@@ -135,31 +128,19 @@ export interface Message {
   conversation_id: string;
   sender_id: string;
   recipient_id: string;
-  sender_type: 'patient' | 'doctor' | 'admin';
-  recipient_type: 'patient' | 'doctor' | 'admin';
+  sender_type?: 'patient' | 'doctor' | 'admin';
+  recipient_type?: 'patient' | 'doctor' | 'admin';
   subject?: string;
   content: string;
   message_type: 'text' | 'file' | 'image' | 'urgent';
   is_urgent: boolean;
   is_read: boolean;
   read_at?: string;
-  attachments?: any[];
+  attachments?: Record<string, unknown>[];
   created_at: string;
 }
 
-export interface Conversation {
-  id: string;
-  tenant_id: string;
-  participant_1_id: string;
-  participant_2_id: string;
-  participant_1_type: 'patient' | 'doctor' | 'admin';
-  participant_2_type: 'patient' | 'doctor' | 'admin';
-  last_message_at: string;
-  is_active: boolean;
-  created_at: string;
-}
-
-// ===== SUPABASE CLIENT SETUP =====
+// ===== SUPABASE CLIENT INITIALIZATION =====
 const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
 const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY;
 
@@ -167,7 +148,7 @@ if (!supabaseUrl || !supabaseAnonKey) {
   throw new Error('Missing Supabase environment variables');
 }
 
-export const supabase: SupabaseClient = createClient(supabaseUrl, supabaseAnonKey);
+const supabase = createClient(supabaseUrl, supabaseAnonKey);
 
 // ===== MULTI-TENANT CONTEXT MANAGEMENT =====
 class MultiTenantSupabaseService {
@@ -182,7 +163,7 @@ class MultiTenantSupabaseService {
       // For public tenant lookup, we need to use the service role key
       // First, try with anonymous access for public tenant info
       const { data: tenant, error } = await supabase
-        .from('tenants')
+        .from('quantumhealth_tenants')
         .select('*')
         .eq('slug', tenantSlug)
         .eq('is_active', true)
@@ -206,7 +187,7 @@ class MultiTenantSupabaseService {
             theme: {
               primary_color: '#14b8a6',
               secondary_color: '#22c55e',
-              logo_url: '/assets/Healthy_ShareImage.png'
+              logo_url: '/assets/QuantumHealth_Logo.png'
             },
             features: {
               reports: true,
@@ -229,26 +210,13 @@ class MultiTenantSupabaseService {
           }
         };
 
-        this.currentTenantId = mockTenant.id;
         this.currentTenant = mockTenant;
+        this.currentTenantId = mockTenant.id;
         return mockTenant;
       }
 
-      if (!tenant) {
-        console.error('Tenant not found for slug:', tenantSlug);
-        return null;
-      }
-
-      this.currentTenantId = tenant.id;
       this.currentTenant = tenant;
-
-      // Set the tenant context in Supabase (if RPC exists)
-      try {
-        await supabase.rpc('set_tenant_context', { tenant_uuid: tenant.id });
-      } catch (rpcError) {
-        console.warn('Could not set tenant context via RPC:', rpcError);
-      }
-
+      this.currentTenantId = tenant.id;
       return tenant;
     } catch (error) {
       console.error('Error setting tenant context:', error);
@@ -257,49 +225,47 @@ class MultiTenantSupabaseService {
   }
 
   /**
-   * Get current tenant information
+   * Get the current tenant context
    */
   getCurrentTenant(): Tenant | null {
     return this.currentTenant;
   }
 
   /**
-   * Get current tenant ID
+   * Get the current tenant ID
    */
   getCurrentTenantId(): string | null {
     return this.currentTenantId;
   }
 
-  /**
-   * Ensure tenant context is set before operations
-   */
-  private ensureTenantContext(): void {
-    if (!this.currentTenantId) {
-      throw new Error('Tenant context not set. Call setTenantContext() first.');
-    }
-  }
-
   // ===== PATIENT OPERATIONS =====
   async getPatients(): Promise<PatientProfile[]> {
-    this.ensureTenantContext();
-    
-    const { data, error } = await supabase
-      .from('patient_profiles')
-      .select('*')
-      .eq('tenant_id', this.currentTenantId)
-      .order('created_at', { ascending: false });
+    if (!this.currentTenantId) {
+      throw new Error('No tenant context set');
+    }
 
-    if (error) throw error;
+    const { data, error } = await supabase
+      .from('quantumhealth_patient_profiles')
+      .select('*')
+      .eq('tenant_id', this.currentTenantId);
+
+    if (error) {
+      console.error('Error fetching patients:', error);
+      return [];
+    }
+
     return data || [];
   }
 
-  async getPatientById(patientId: string): Promise<PatientProfile | null> {
-    this.ensureTenantContext();
-    
+  async getPatientById(id: string): Promise<PatientProfile | null> {
+    if (!this.currentTenantId) {
+      throw new Error('No tenant context set');
+    }
+
     const { data, error } = await supabase
-      .from('patient_profiles')
+      .from('quantumhealth_patient_profiles')
       .select('*')
-      .eq('id', patientId)
+      .eq('id', id)
       .eq('tenant_id', this.currentTenantId)
       .single();
 
@@ -307,46 +273,60 @@ class MultiTenantSupabaseService {
       console.error('Error fetching patient:', error);
       return null;
     }
+
     return data;
   }
 
-  async createPatient(patient: Omit<PatientProfile, 'id' | 'tenant_id' | 'created_at' | 'updated_at'>): Promise<PatientProfile | null> {
-    this.ensureTenantContext();
-    
+  async createPatient(patientData: Omit<PatientProfile, 'id' | 'tenant_id' | 'created_at' | 'updated_at'>): Promise<PatientProfile | null> {
+    if (!this.currentTenantId) {
+      throw new Error('No tenant context set');
+    }
+
     const { data, error } = await supabase
-      .from('patient_profiles')
+      .from('quantumhealth_patient_profiles')
       .insert({
-        ...patient,
+        ...patientData,
         tenant_id: this.currentTenantId
       })
       .select()
       .single();
 
-    if (error) throw error;
+    if (error) {
+      console.error('Error creating patient:', error);
+      return null;
+    }
+
     return data;
   }
 
   // ===== DOCTOR OPERATIONS =====
   async getDoctors(): Promise<DoctorProfile[]> {
-    this.ensureTenantContext();
-    
-    const { data, error } = await supabase
-      .from('doctor_profiles')
-      .select('*')
-      .eq('tenant_id', this.currentTenantId)
-      .order('created_at', { ascending: false });
+    if (!this.currentTenantId) {
+      throw new Error('No tenant context set');
+    }
 
-    if (error) throw error;
+    const { data, error } = await supabase
+      .from('quantumhealth_doctor_profiles')
+      .select('*')
+      .eq('tenant_id', this.currentTenantId);
+
+    if (error) {
+      console.error('Error fetching doctors:', error);
+      return [];
+    }
+
     return data || [];
   }
 
-  async getDoctorById(doctorId: string): Promise<DoctorProfile | null> {
-    this.ensureTenantContext();
-    
+  async getDoctorById(id: string): Promise<DoctorProfile | null> {
+    if (!this.currentTenantId) {
+      throw new Error('No tenant context set');
+    }
+
     const { data, error } = await supabase
-      .from('doctor_profiles')
+      .from('quantumhealth_doctor_profiles')
       .select('*')
-      .eq('id', doctorId)
+      .eq('id', id)
       .eq('tenant_id', this.currentTenantId)
       .single();
 
@@ -354,177 +334,213 @@ class MultiTenantSupabaseService {
       console.error('Error fetching doctor:', error);
       return null;
     }
+
+    return data;
+  }
+
+  async createDoctor(doctorData: Omit<DoctorProfile, 'id' | 'tenant_id' | 'created_at' | 'updated_at'>): Promise<DoctorProfile | null> {
+    if (!this.currentTenantId) {
+      throw new Error('No tenant context set');
+    }
+
+    const { data, error } = await supabase
+      .from('quantumhealth_doctor_profiles')
+      .insert({
+        ...doctorData,
+        tenant_id: this.currentTenantId
+      })
+      .select()
+      .single();
+
+    if (error) {
+      console.error('Error creating doctor:', error);
+      return null;
+    }
+
     return data;
   }
 
   // ===== MEDICAL REPORTS OPERATIONS =====
-  async getMedicalReports(patientId?: string): Promise<MedicalReport[]> {
-    this.ensureTenantContext();
-    
-    let query = supabase
-      .from('medical_reports')
+  async getMedicalReports(): Promise<MedicalReport[]> {
+    if (!this.currentTenantId) {
+      throw new Error('No tenant context set');
+    }
+
+    const { data, error } = await supabase
+      .from('quantumhealth_medical_reports')
       .select('*')
       .eq('tenant_id', this.currentTenantId);
 
-    if (patientId) {
-      query = query.eq('patient_id', patientId);
+    if (error) {
+      console.error('Error fetching medical reports:', error);
+      return [];
     }
 
-    const { data, error } = await query.order('created_at', { ascending: false });
-
-    if (error) throw error;
     return data || [];
   }
 
-  async createMedicalReport(report: Omit<MedicalReport, 'id' | 'tenant_id' | 'created_at' | 'updated_at'>): Promise<MedicalReport | null> {
-    this.ensureTenantContext();
-    
+  async createMedicalReport(reportData: Omit<MedicalReport, 'id' | 'tenant_id' | 'created_at' | 'updated_at'>): Promise<MedicalReport | null> {
+    if (!this.currentTenantId) {
+      throw new Error('No tenant context set');
+    }
+
     const { data, error } = await supabase
-      .from('medical_reports')
+      .from('quantumhealth_medical_reports')
       .insert({
-        ...report,
+        ...reportData,
         tenant_id: this.currentTenantId
       })
       .select()
       .single();
 
-    if (error) throw error;
+    if (error) {
+      console.error('Error creating medical report:', error);
+      return null;
+    }
+
     return data;
-  }
-
-  async updateMedicalReportStatus(reportId: string, status: 'pending' | 'reviewed' | 'archived'): Promise<boolean> {
-    this.ensureTenantContext();
-    
-    const { error } = await supabase
-      .from('medical_reports')
-      .update({ 
-        status,
-        updated_at: new Date().toISOString()
-      })
-      .eq('id', reportId)
-      .eq('tenant_id', this.currentTenantId);
-
-    return !error;
   }
 
   // ===== APPOINTMENTS OPERATIONS =====
-  async getAppointments(patientId?: string, doctorId?: string): Promise<Appointment[]> {
-    this.ensureTenantContext();
-    
-    let query = supabase
-      .from('appointments')
+  async getAppointments(): Promise<Appointment[]> {
+    if (!this.currentTenantId) {
+      throw new Error('No tenant context set');
+    }
+
+    const { data, error } = await supabase
+      .from('quantumhealth_appointments')
       .select('*')
       .eq('tenant_id', this.currentTenantId);
 
-    if (patientId) query = query.eq('patient_id', patientId);
-    if (doctorId) query = query.eq('doctor_id', doctorId);
+    if (error) {
+      console.error('Error fetching appointments:', error);
+      return [];
+    }
 
-    const { data, error } = await query.order('appointment_date', { ascending: true });
-
-    if (error) throw error;
     return data || [];
   }
 
-  async createAppointment(appointment: Omit<Appointment, 'id' | 'tenant_id' | 'created_at' | 'updated_at'>): Promise<Appointment | null> {
-    this.ensureTenantContext();
-    
+  async createAppointment(appointmentData: Omit<Appointment, 'id' | 'tenant_id' | 'created_at' | 'updated_at'>): Promise<Appointment | null> {
+    if (!this.currentTenantId) {
+      throw new Error('No tenant context set');
+    }
+
     const { data, error } = await supabase
-      .from('appointments')
+      .from('quantumhealth_appointments')
       .insert({
-        ...appointment,
+        ...appointmentData,
         tenant_id: this.currentTenantId
       })
       .select()
       .single();
 
-    if (error) throw error;
+    if (error) {
+      console.error('Error creating appointment:', error);
+      return null;
+    }
+
     return data;
   }
 
-  // ===== MESSAGING OPERATIONS =====
-  async getConversations(userId: string, userType: 'patient' | 'doctor' | 'admin'): Promise<Conversation[]> {
-    this.ensureTenantContext();
-    
-    const { data, error } = await supabase
-      .from('conversations')
-      .select('*')
-      .eq('tenant_id', this.currentTenantId)
-      .or(`participant_1_id.eq.${userId},participant_2_id.eq.${userId}`)
-      .eq('is_active', true)
-      .order('last_message_at', { ascending: false });
+  // ===== CONVERSATIONS OPERATIONS =====
+  async getConversations(): Promise<Conversation[]> {
+    if (!this.currentTenantId) {
+      throw new Error('No tenant context set');
+    }
 
-    if (error) throw error;
+    const { data, error } = await supabase
+      .from('quantumhealth_conversations')
+      .select('*')
+      .eq('tenant_id', this.currentTenantId);
+
+    if (error) {
+      console.error('Error fetching conversations:', error);
+      return [];
+    }
+
     return data || [];
   }
 
-  async getMessages(conversationId: string): Promise<Message[]> {
-    this.ensureTenantContext();
-    
+  async createConversation(conversationData: Omit<Conversation, 'id' | 'tenant_id' | 'created_at'>): Promise<Conversation | null> {
+    if (!this.currentTenantId) {
+      throw new Error('No tenant context set');
+    }
+
     const { data, error } = await supabase
-      .from('messages')
+      .from('quantumhealth_conversations')
+      .insert({
+        ...conversationData,
+        tenant_id: this.currentTenantId
+      })
+      .select()
+      .single();
+
+    if (error) {
+      console.error('Error creating conversation:', error);
+      return null;
+    }
+
+    return data;
+  }
+
+  // ===== MESSAGES OPERATIONS =====
+  async getMessages(conversationId: string): Promise<Message[]> {
+    if (!this.currentTenantId) {
+      throw new Error('No tenant context set');
+    }
+
+    const { data, error } = await supabase
+      .from('quantumhealth_messages')
       .select('*')
-      .eq('conversation_id', conversationId)
       .eq('tenant_id', this.currentTenantId)
+      .eq('conversation_id', conversationId)
       .order('created_at', { ascending: true });
 
-    if (error) throw error;
+    if (error) {
+      console.error('Error fetching messages:', error);
+      return [];
+    }
+
     return data || [];
   }
 
-  async sendMessage(message: Omit<Message, 'id' | 'tenant_id' | 'created_at'>): Promise<Message | null> {
-    this.ensureTenantContext();
-    
+  async createMessage(messageData: Omit<Message, 'id' | 'tenant_id' | 'created_at'>): Promise<Message | null> {
+    if (!this.currentTenantId) {
+      throw new Error('No tenant context set');
+    }
+
     const { data, error } = await supabase
-      .from('messages')
+      .from('quantumhealth_messages')
       .insert({
-        ...message,
+        ...messageData,
         tenant_id: this.currentTenantId
       })
       .select()
       .single();
 
-    if (error) throw error;
-    return data;
-  }
-
-  // ===== TENANT MANAGEMENT =====
-  async getUserTenants(userId: string): Promise<Tenant[]> {
-    const { data, error } = await supabase
-      .from('tenant_users')
-      .select(`
-        tenant_id,
-        role,
-        tenants (*)
-      `)
-      .eq('user_id', userId);
-
-    if (error) throw error;
-    
-    // Type-safe extraction of tenant data
-    if (!data) return [];
-    
-    const tenants: Tenant[] = [];
-    for (const item of data) {
-      if (item.tenants && typeof item.tenants === 'object') {
-        tenants.push(item.tenants as unknown as Tenant);
-      }
+    if (error) {
+      console.error('Error creating message:', error);
+      return null;
     }
-    
-    return tenants;
+
+    return data;
   }
 }
 
-// ===== EXPORT SINGLETON INSTANCE =====
+// ===== EXPORT INSTANCE =====
 export const multiTenantService = new MultiTenantSupabaseService();
 
-// ===== UTILITY FUNCTIONS =====
-export const initializeApp = async (tenantSlug: string = 'quantumhealth') => {
+// ===== INITIALIZATION FUNCTIONS =====
+export async function initializeApp(tenantSlug: string): Promise<Tenant> {
   const tenant = await multiTenantService.setTenantContext(tenantSlug);
   if (!tenant) {
-    throw new Error(`Failed to initialize app: Tenant '${tenantSlug}' not found`);
+    throw new Error(`Failed to initialize tenant: ${tenantSlug}`);
   }
   return tenant;
-};
+}
 
-export const getCurrentTenant = () => multiTenantService.getCurrentTenant();
-export const getCurrentTenantId = () => multiTenantService.getCurrentTenantId(); 
+export function getCurrentTenant(): Tenant | null {
+  return multiTenantService.getCurrentTenant();
+}
+
+export default multiTenantService; 
