@@ -17,16 +17,16 @@ const DoctorProfile = () => {
   const [emailVisible, setEmailVisible] = useState(false);
   const [phoneVisible, setPhoneVisible] = useState(false);
   const [editForm, setEditForm] = useState({
-    name: '',
+    first_name: '',
+    last_name: '',
     email: '',
     phone: '',
     specialization: '',
-    licenseNumber: '',
-    experience: '',
-    education: '',
-    bio: '',
-    languages: '',
-    consultationFee: ''
+    license_number: '',
+    experience_years: '',
+    qualifications: '',
+    clinic_name: '',
+    consultation_fee: ''
   });
 
   useEffect(() => {
@@ -39,16 +39,16 @@ const DoctorProfile = () => {
       const doctorProfile = await multiTenantService.getCurrentDoctorProfile();
       setProfile(doctorProfile);
       setEditForm({
-        name: doctorProfile?.name || '',
+        first_name: doctorProfile?.first_name || '',
+        last_name: doctorProfile?.last_name || '',
         email: doctorProfile?.email || '',
         phone: doctorProfile?.phone || '',
         specialization: doctorProfile?.specialization || '',
-        licenseNumber: doctorProfile?.licenseNumber || '',
-        experience: doctorProfile?.experience || '',
-        education: doctorProfile?.education || '',
-        bio: doctorProfile?.bio || '',
-        languages: doctorProfile?.languages || '',
-        consultationFee: doctorProfile?.consultationFee?.toString() || ''
+        license_number: doctorProfile?.license_number || '',
+        experience_years: doctorProfile?.experience_years?.toString() || '',
+        qualifications: doctorProfile?.qualifications?.join(', ') || '',
+        clinic_name: doctorProfile?.clinic_name || '',
+        consultation_fee: doctorProfile?.consultation_fee?.toString() || ''
       });
     } catch (error) {
       console.error('Failed to load profile:', error);
@@ -65,16 +65,16 @@ const DoctorProfile = () => {
     setIsEditing(false);
     // Reset form to original values
     setEditForm({
-      name: profile?.name || '',
+      first_name: profile?.first_name || '',
+      last_name: profile?.last_name || '',
       email: profile?.email || '',
       phone: profile?.phone || '',
       specialization: profile?.specialization || '',
-      licenseNumber: profile?.licenseNumber || '',
-      experience: profile?.experience || '',
-      education: profile?.education || '',
-      bio: profile?.bio || '',
-      languages: profile?.languages || '',
-      consultationFee: profile?.consultationFee?.toString() || ''
+      license_number: profile?.license_number || '',
+      experience_years: profile?.experience_years?.toString() || '',
+      qualifications: profile?.qualifications?.join(', ') || '',
+      clinic_name: profile?.clinic_name || '',
+      consultation_fee: profile?.consultation_fee?.toString() || ''
     });
   };
 
@@ -84,7 +84,9 @@ const DoctorProfile = () => {
         const updatedProfile = await multiTenantService.updateDoctorProfile({
           ...profile,
           ...editForm,
-          consultationFee: parseFloat(editForm.consultationFee) || 0
+          experience_years: parseInt(editForm.experience_years) || 0,
+          qualifications: editForm.qualifications.split(',').map(q => q.trim()).filter(q => q),
+          consultation_fee: parseFloat(editForm.consultation_fee) || 0
         });
         setProfile(updatedProfile);
         setIsEditing(false);

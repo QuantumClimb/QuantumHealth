@@ -567,6 +567,123 @@ class MultiTenantSupabaseService {
 
     return data;
   }
+
+  // ===== CURRENT USER PROFILE OPERATIONS =====
+  async getCurrentDoctorProfile(): Promise<DoctorProfile | null> {
+    if (!this.currentTenantId) {
+      throw new Error('No tenant context set');
+    }
+
+    // For now, return a mock profile since we don't have user authentication set up
+    // In a real app, you would get the current user ID from auth context
+    const mockDoctorProfile: DoctorProfile = {
+      id: 'mock-doctor-id',
+      tenant_id: this.currentTenantId,
+      user_id: 'mock-user-id',
+      first_name: 'Dr. Sarah',
+      last_name: 'Johnson',
+      email: 'sarah.johnson@quantumhealth.com',
+      phone: '+1-555-0123',
+      clinic_name: 'Quantum Health Clinic',
+      specialization: 'Cardiology',
+      license_number: 'MD123456',
+      experience_years: 8,
+      qualifications: ['MBBS', 'MD Cardiology', 'Fellowship in Interventional Cardiology'],
+      consultation_fee: 150,
+      availability: {
+        monday: { start: '09:00', end: '17:00' },
+        tuesday: { start: '09:00', end: '17:00' },
+        wednesday: { start: '09:00', end: '17:00' },
+        thursday: { start: '09:00', end: '17:00' },
+        friday: { start: '09:00', end: '17:00' }
+      },
+      created_at: new Date().toISOString(),
+      updated_at: new Date().toISOString()
+    };
+
+    return mockDoctorProfile;
+  }
+
+  async getCurrentPatientProfile(): Promise<PatientProfile | null> {
+    if (!this.currentTenantId) {
+      throw new Error('No tenant context set');
+    }
+
+    // For now, return a mock profile since we don't have user authentication set up
+    // In a real app, you would get the current user ID from auth context
+    const mockPatientProfile: PatientProfile = {
+      id: 'mock-patient-id',
+      tenant_id: this.currentTenantId,
+      user_id: 'mock-user-id',
+      first_name: 'John',
+      last_name: 'Doe',
+      email: 'john.doe@example.com',
+      phone: '+1-555-0124',
+      date_of_birth: '1985-03-15',
+      gender: 'male',
+      address: {
+        street: '123 Health Street',
+        city: 'Wellness City',
+        state: 'CA',
+        zip: '90210',
+        country: 'USA'
+      },
+      emergency_contact: {
+        name: 'Jane Doe',
+        relationship: 'Spouse',
+        phone: '+1-555-0125'
+      },
+      medical_history: {
+        conditions: ['Hypertension'],
+        surgeries: ['Appendectomy - 2010'],
+        allergies: ['Penicillin']
+      },
+      allergies: ['Penicillin', 'Shellfish'],
+      medications: ['Lisinopril 10mg daily'],
+      created_at: new Date().toISOString(),
+      updated_at: new Date().toISOString()
+    };
+
+    return mockPatientProfile;
+  }
+
+  async updateDoctorProfile(profileData: Partial<DoctorProfile>): Promise<DoctorProfile | null> {
+    if (!this.currentTenantId) {
+      throw new Error('No tenant context set');
+    }
+
+    // For now, just return the updated mock profile
+    // In a real app, you would update the database
+    const currentProfile = await this.getCurrentDoctorProfile();
+    if (!currentProfile) return null;
+
+    const updatedProfile: DoctorProfile = {
+      ...currentProfile,
+      ...profileData,
+      updated_at: new Date().toISOString()
+    };
+
+    return updatedProfile;
+  }
+
+  async updatePatientProfile(profileData: Partial<PatientProfile>): Promise<PatientProfile | null> {
+    if (!this.currentTenantId) {
+      throw new Error('No tenant context set');
+    }
+
+    // For now, just return the updated mock profile
+    // In a real app, you would update the database
+    const currentProfile = await this.getCurrentPatientProfile();
+    if (!currentProfile) return null;
+
+    const updatedProfile: PatientProfile = {
+      ...currentProfile,
+      ...profileData,
+      updated_at: new Date().toISOString()
+    };
+
+    return updatedProfile;
+  }
 }
 
 // ===== EXPORT INSTANCE =====
