@@ -148,7 +148,7 @@ if (!supabaseUrl || !supabaseAnonKey) {
   throw new Error('Missing Supabase environment variables');
 }
 
-const supabase = createClient(supabaseUrl, supabaseAnonKey);
+export const supabase = createClient(supabaseUrl, supabaseAnonKey);
 
 // ===== MULTI-TENANT CONTEXT MANAGEMENT =====
 class MultiTenantSupabaseService {
@@ -436,6 +436,30 @@ class MultiTenantSupabaseService {
 
     if (error) {
       console.error('Error creating appointment:', error);
+      return null;
+    }
+
+    return data;
+  }
+
+  async updateAppointment(id: string, updates: Partial<Omit<Appointment, 'id' | 'tenant_id' | 'created_at' | 'updated_at'>>): Promise<Appointment | null> {
+    if (!this.currentTenantId) {
+      throw new Error('No tenant context set');
+    }
+
+    const { data, error } = await supabase
+      .from('quantumhealth_appointments')
+      .update({
+        ...updates,
+        updated_at: new Date().toISOString()
+      })
+      .eq('id', id)
+      .eq('tenant_id', this.currentTenantId)
+      .select()
+      .single();
+
+    if (error) {
+      console.error('Error updating appointment:', error);
       return null;
     }
 

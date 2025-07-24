@@ -7,7 +7,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Badge } from '@/components/ui/badge';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import Layout from '@/components/Layout';
-import { multiTenantService, type Appointment, type DoctorProfile, supabase } from '@/services/supabaseService';
+import { multiTenantService, type Appointment, type DoctorProfile } from '@/services/supabaseService';
 
 interface AppointmentWithDoctor extends Appointment {
   doctorName?: string;
@@ -28,8 +28,11 @@ const PatientAppointments = () => {
   const loadAppointments = async () => {
     try {
       setLoading(true);
-      const patientId = 'current-patient-id'; // This should come from auth context
-      const patientAppointments = await multiTenantService.getAppointments(patientId);
+      const allAppointments = await multiTenantService.getAppointments();
+      
+      // Filter appointments for current patient (this should come from auth context)
+      const patientId = 'current-patient-id';
+      const patientAppointments = allAppointments.filter(apt => apt.patient_id === patientId);
       
       // Get doctor details for each appointment
       const appointmentsWithDoctors = await Promise.all(
@@ -97,14 +100,11 @@ const PatientAppointments = () => {
   const handleCancelAppointment = async (appointmentId: string) => {
     try {
       // Update appointment status to cancelled
-      const { data, error } = await supabase
-        .from('quantumhealth_appointments')
-        .update({ status: 'cancelled' })
-        .eq('id', appointmentId)
-        .eq('tenant_id', multiTenantService.getCurrentTenantId());
+      const updatedAppointment = await multiTenantService.updateAppointment(appointmentId, { status: 'cancelled' });
       
-      if (error) throw error;
-      loadAppointments(); // Reload to get updated data
+      if (updatedAppointment) {
+        loadAppointments(); // Reload to get updated data
+      }
     } catch (error) {
       console.error('Failed to cancel appointment:', error);
     }
