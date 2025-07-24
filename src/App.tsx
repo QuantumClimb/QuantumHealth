@@ -9,6 +9,8 @@ import { initializeApp, getCurrentTenant, type Tenant } from '@/services/supabas
 
 import Index from "./pages/Index";
 import Login from "./pages/Login";
+import Register from "./pages/Register";
+import PasswordReset from "./pages/PasswordReset";
 import PatientDashboard from "./pages/PatientDashboard";
 import PatientProfile from "./pages/PatientProfile";
 import PatientReports from "./pages/PatientReports";
@@ -112,6 +114,8 @@ const App = () => {
               <Routes>
                 <Route path="/" element={<Index />} />
                 <Route path="/login" element={<Login />} />
+                <Route path="/register" element={<Register />} />
+                <Route path="/password-reset" element={<PasswordReset />} />
                 
                 {/* Patient Routes */}
                 <Route path="/patient/dashboard" element={<PatientDashboard />} />
