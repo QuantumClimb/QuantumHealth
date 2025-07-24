@@ -93,8 +93,23 @@ const PatientAppointments = () => {
   };
 
   const createWhatsAppUrl = (phone: string, doctorName: string, appointment: AppointmentWithDoctor) => {
+    // Validate phone number
+    if (!phone || phone.trim() === '') {
+      console.warn('Invalid phone number for WhatsApp URL:', phone);
+      return '#';
+    }
+    
+    // Clean phone number (remove spaces, dashes, etc.)
+    const cleanPhone = phone.replace(/[\s\-()]/g, '');
+    
+    // Validate it's a reasonable phone number
+    if (cleanPhone.length < 7 || cleanPhone.length > 15) {
+      console.warn('Phone number length invalid:', cleanPhone);
+      return '#';
+    }
+    
     const message = `Hi Dr. ${doctorName}, this is regarding my appointment on ${new Date(appointment.appointment_date).toLocaleDateString()} at ${getTimeSlot(appointment.appointment_date, appointment.appointment_time)}.`;
-    return `https://wa.me/${phone}?text=${encodeURIComponent(message)}`;
+    return `https://wa.me/${cleanPhone}?text=${encodeURIComponent(message)}`;
   };
 
   const handleCancelAppointment = async (appointmentId: string) => {

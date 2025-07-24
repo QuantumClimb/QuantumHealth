@@ -42,8 +42,14 @@ const App = () => {
     const initialize = async () => {
       try {
         // Extract tenant from URL or default to quantumhealth
-        const urlParams = new URLSearchParams(window.location.search);
-        const tenantSlug = urlParams.get('tenant') || 'quantumhealth';
+        let tenantSlug = 'quantumhealth';
+        
+        try {
+          const urlParams = new URLSearchParams(window.location.search);
+          tenantSlug = urlParams.get('tenant') || 'quantumhealth';
+        } catch (urlError) {
+          console.warn('Failed to parse URL parameters, using default tenant:', urlError);
+        }
         
         console.log('🚀 Initializing QuantumHealth with tenant:', tenantSlug);
         

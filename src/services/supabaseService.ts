@@ -144,11 +144,29 @@ export interface Message {
 const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
 const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY;
 
+// Validate environment variables
 if (!supabaseUrl || !supabaseAnonKey) {
-  throw new Error('Missing Supabase environment variables');
+  console.error('Missing Supabase environment variables:', {
+    VITE_SUPABASE_URL: supabaseUrl ? 'SET' : 'MISSING',
+    VITE_SUPABASE_ANON_KEY: supabaseAnonKey ? 'SET' : 'MISSING'
+  });
+  
+  // In development, we can continue with mock data
+  if (import.meta.env.DEV) {
+    console.warn('Running in development mode with mock data');
+  } else {
+    throw new Error('Missing Supabase environment variables. Please check your Vercel environment configuration.');
+  }
 }
 
-export const supabase = createClient(supabaseUrl, supabaseAnonKey);
+// Validate URL format
+let validSupabaseUrl = supabaseUrl;
+if (supabaseUrl && !supabaseUrl.startsWith('https://')) {
+  console.warn('Invalid Supabase URL format. Expected https:// URL');
+  validSupabaseUrl = `https://${supabaseUrl}`;
+}
+
+export const supabase = createClient(validSupabaseUrl || 'https://placeholder.supabase.co', supabaseAnonKey || 'placeholder-key');
 
 // ===== MULTI-TENANT CONTEXT MANAGEMENT =====
 class MultiTenantSupabaseService {
