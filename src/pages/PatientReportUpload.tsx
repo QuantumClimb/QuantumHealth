@@ -12,6 +12,7 @@ import { useToast } from '@/hooks/use-toast';
 import { Form, FormField, FormItem, FormLabel, FormControl, FormDescription } from '@/components/ui/form';
 import { useForm } from 'react-hook-form';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { multiTenantService } from '@/services/supabaseService';
 
 const PatientReportUpload = () => {
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
@@ -66,7 +67,7 @@ const PatientReportUpload = () => {
     setSelectedFile(null);
   };
 
-  const onSubmit = (data: any) => {
+  const onSubmit = async (data: { reportName: string; category: string; description: string }) => {
     if (!selectedFile) {
       toast({
         title: 'No file selected',
@@ -78,19 +79,42 @@ const PatientReportUpload = () => {
 
     setIsUploading(true);
 
-    // Mock API call with setTimeout
-    setTimeout(() => {
-      // Mock successful upload
-      setIsUploading(false);
-      toast({
-        title: 'Report uploaded successfully',
-        description: 'Your medical report has been uploaded and is pending review.',
+    try {
+      // Create the report in the database
+      const newReport = await multiTenantService.createMedicalReport({
+        patient_id: 'current-patient-id', // This should come from auth context
+        doctor_id: undefined, // Patient uploaded reports don't have a doctor initially
+        report_name: data.reportName,
+        report_type: 'lab', // Default to lab for patient uploads
+        category: data.category,
+        description: data.description || '',
+        status: 'pending',
+        metadata: {
+          uploaded_by: 'patient',
+          file_name: selectedFile?.name
+        }
       });
 
-      // Reset form
-      form.reset();
-      setSelectedFile(null);
-    }, 2000);
+      if (newReport) {
+        setIsUploading(false);
+        toast({
+          title: 'Report uploaded successfully',
+          description: 'Your medical report has been uploaded and is pending review.',
+        });
+
+        // Reset form
+        form.reset();
+        setSelectedFile(null);
+      }
+    } catch (error) {
+      console.error('Failed to upload report:', error);
+      setIsUploading(false);
+      toast({
+        title: 'Upload failed',
+        description: 'There was an error uploading your report. Please try again.',
+        variant: 'destructive'
+      });
+    }
   };
 
   return (

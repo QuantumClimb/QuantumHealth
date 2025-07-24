@@ -1,39 +1,74 @@
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { FileText, Upload } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import Layout from '@/components/Layout';
 import { Button } from '@/components/ui/button';
-import { mockReports, Report } from '@/mock/reportData';
+import { multiTenantService, type MedicalReport } from '@/services/supabaseService';
 import ReportFilter from '@/components/reports/ReportFilter';
 import ReportTabs from '@/components/reports/ReportTabs';
 import ReportDetail from '@/components/reports/ReportDetail';
 import NoReportSelected from '@/components/reports/NoReportSelected';
+import { toast } from 'sonner';
 
 const DoctorReports = () => {
   const [searchQuery, setSearchQuery] = useState('');
-  const [reports] = useState(mockReports);
-  const [selectedReport, setSelectedReport] = useState<Report | null>(null);
+  const [reports, setReports] = useState<MedicalReport[]>([]);
+  const [selectedReport, setSelectedReport] = useState<MedicalReport | null>(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    loadReports();
+  }, []);
+
+  const loadReports = async () => {
+    try {
+      setLoading(true);
+      const reportsData = await multiTenantService.getMedicalReports();
+      setReports(reportsData);
+      console.log('📋 Reports loaded:', reportsData.length);
+    } catch (error) {
+      console.error('Error loading reports:', error);
+      toast.error('Failed to load reports. Please refresh the page.');
+    } finally {
+      setLoading(false);
+    }
+  };
 
   // Filter reports based on search query
   const filteredReports = reports.filter(report => 
-    report.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    report.category.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    report.doctor.toLowerCase().includes(searchQuery.toLowerCase())
+    report.report_type?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+    report.report_name?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+    report.description?.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
   // Handle report selection
-  const handleReportSelect = (report: Report) => {
+  const handleReportSelect = (report: MedicalReport) => {
     setSelectedReport(report);
   };
+
+  if (loading) {
+    return (
+      <Layout userRole="doctor">
+        <div className="max-w-7xl mx-auto">
+          <div className="flex items-center justify-center h-64">
+            <div className="text-center">
+              <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-healthy-600 mx-auto mb-4"></div>
+              <p className="text-gray-600">Loading reports...</p>
+            </div>
+          </div>
+        </div>
+      </Layout>
+    );
+  }
 
   return (
     <Layout userRole="doctor">
       <div className="max-w-7xl mx-auto">
         <header className="mb-8 flex flex-wrap items-center justify-between gap-4">
           <div>
-            <h1 className="text-3xl font-bold text-gray-800">Patient Reports</h1>
-            <p className="text-gray-500">Manage and review patient reports and test results</p>
+            <h1 className="text-3xl font-bold text-gray-800">Medical Reports</h1>
+            <p className="text-gray-500">Access and manage patient medical reports and test results</p>
           </div>
           <Link to="/doctor/reports/upload">
             <Button className="flex items-center gap-2">

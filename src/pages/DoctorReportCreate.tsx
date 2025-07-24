@@ -11,6 +11,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import Layout from '@/components/Layout';
 import { multiTenantService, type MedicalReport, type PatientProfile, type Appointment } from '@/services/supabaseService';
+import { toast } from 'sonner';
 
 const DoctorReportCreate = () => {
   const { id } = useParams<{ id: string }>();
@@ -20,7 +21,7 @@ const DoctorReportCreate = () => {
   const [patient, setPatient] = useState<PatientProfile | null>(null);
   const [report, setReport] = useState({
     report_name: '',
-    report_type: 'consultation' as const,
+    report_type: 'consultation' as 'lab' | 'imaging' | 'pathology' | 'consultation' | 'prescription',
     category: '',
     description: '',
     file: null as File | null,
@@ -37,32 +38,23 @@ const DoctorReportCreate = () => {
   const loadAppointmentData = async () => {
     try {
       setLoading(true);
-      // In a real app, you'd get the appointment by ID
-      // For now, we'll simulate loading appointment data
-      const mockAppointment: Appointment = {
-        id: id || '',
-        tenant_id: 'mock-tenant',
-        patient_id: 'mock-patient',
-        doctor_id: 'mock-doctor',
-        appointment_date: new Date().toISOString().split('T')[0],
-        appointment_time: '10:00:00',
-        status: 'completed',
-        appointment_type: 'consultation',
-        notes: 'Patient consultation completed',
-        consultation_fee: 100,
-        payment_status: 'paid',
-        created_at: new Date().toISOString(),
-        updated_at: new Date().toISOString()
-      };
-      
-      setAppointment(mockAppointment);
-      
-      // Load patient data
+      // Load appointment data from database
       try {
-        const patientData = await multiTenantService.getPatientById(mockAppointment.patient_id);
+        const appointments = await multiTenantService.getAppointments();
+        const appointmentData = appointments.find(apt => apt.id === id);
+        
+        if (!appointmentData) {
+          throw new Error('Appointment not found');
+        }
+        
+        setAppointment(appointmentData);
+        
+        // Load patient data
+        const patientData = await multiTenantService.getPatientById(appointmentData.patient_id);
         setPatient(patientData);
       } catch (error) {
-        console.error('Failed to load patient data:', error);
+        console.error('Failed to load appointment or patient data:', error);
+        toast.error('Failed to load appointment data. Please try again.');
       }
     } catch (error) {
       console.error('Failed to load appointment data:', error);
@@ -243,7 +235,7 @@ const DoctorReportCreate = () => {
                     <Label htmlFor="report_type">Report Type *</Label>
                     <Select 
                       value={report.report_type} 
-                      onValueChange={(value: any) => setReport(prev => ({ ...prev, report_type: value }))}
+                      onValueChange={(value: string) => setReport(prev => ({ ...prev, report_type: value as 'lab' | 'imaging' | 'pathology' | 'consultation' | 'prescription' }))}
                     >
                       <SelectTrigger>
                         <SelectValue />
@@ -262,7 +254,7 @@ const DoctorReportCreate = () => {
                     <Label htmlFor="priority">Priority</Label>
                     <Select 
                       value={report.priority} 
-                      onValueChange={(value: any) => setReport(prev => ({ ...prev, priority: value }))}
+                      onValueChange={(value: string) => setReport(prev => ({ ...prev, priority: value as 'low' | 'normal' | 'high' }))}
                     >
                       <SelectTrigger>
                         <SelectValue />

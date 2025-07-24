@@ -3,11 +3,11 @@ import React from 'react';
 import { FileText, Calendar } from 'lucide-react';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Badge } from '@/components/ui/badge';
-import type { Report } from '@/mock/reportData';
+import type { MedicalReport } from '@/services/supabaseService';
 
 type ReportListProps = {
-  reports: Report[];
-  onReportSelect: (report: Report) => void;
+  reports: MedicalReport[];
+  onReportSelect: (report: MedicalReport) => void;
 };
 
 const ReportList = ({ reports, onReportSelect }: ReportListProps) => {
@@ -33,15 +33,15 @@ const ReportList = ({ reports, onReportSelect }: ReportListProps) => {
                 <div className="flex items-center space-x-3">
                   <FileText className="h-5 w-5 text-healthy-600" />
                   <div>
-                    <p className="font-medium">{report.name}</p>
-                    <p className="text-xs text-gray-500 md:hidden">{report.date} · {report.category}</p>
+                    <p className="font-medium">{report.report_name}</p>
+                    <p className="text-xs text-gray-500 md:hidden">{new Date(report.created_at).toLocaleDateString()} · {report.category}</p>
                   </div>
                 </div>
               </TableCell>
               <TableCell className="hidden md:table-cell">
                 <div className="flex items-center gap-1">
                   <Calendar className="h-3 w-3 text-muted-foreground" />
-                  {report.date}
+                  {new Date(report.created_at).toLocaleDateString()}
                 </div>
               </TableCell>
               <TableCell className="hidden md:table-cell">{report.category}</TableCell>

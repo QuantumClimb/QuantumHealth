@@ -1,16 +1,15 @@
 
 import React, { useState } from 'react';
-import { Download, Loader2 } from 'lucide-react';
+import { Download, Loader2, FileText } from 'lucide-react';
 import { Card, CardHeader, CardContent, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { AspectRatio } from '@/components/ui/aspect-ratio';
 import { useToast } from '@/hooks/use-toast';
-import { downloadMockReport } from '@/services/reportService';
-import type { Report } from '@/mock/reportData';
+import type { MedicalReport } from '@/services/supabaseService';
 
 type ReportDetailProps = {
-  report: Report;
+  report: MedicalReport;
 };
 
 const ReportDetail = ({ report }: ReportDetailProps) => {
@@ -21,11 +20,24 @@ const ReportDetail = ({ report }: ReportDetailProps) => {
     setIsDownloading(true);
     
     try {
-      await downloadMockReport(report);
-      toast({
-        title: "Download Complete",
-        description: `${report.name} has been downloaded successfully.`
-      });
+      if (report.file_url) {
+        // Create a download link for the file
+        const link = document.createElement('a');
+        link.href = report.file_url;
+        link.download = report.report_name;
+        link.click();
+        
+        toast({
+          title: "Download Complete",
+          description: `${report.report_name} has been downloaded successfully.`
+        });
+      } else {
+        toast({
+          title: "No File Available",
+          description: "This report doesn't have an associated file to download.",
+          variant: "destructive"
+        });
+      }
     } catch (error) {
       toast({
         title: "Download Failed",
@@ -43,7 +55,7 @@ const ReportDetail = ({ report }: ReportDetailProps) => {
       <CardHeader>
         <CardTitle className="flex items-start justify-between">
           <div>
-            <h2 className="text-xl font-bold">{report.name}</h2>
+            <h2 className="text-xl font-bold">{report.report_name}</h2>
             <p className="text-sm text-gray-500">{report.category}</p>
           </div>
           <Badge 
@@ -60,39 +72,37 @@ const ReportDetail = ({ report }: ReportDetailProps) => {
       </CardHeader>
       <CardContent className="space-y-4">
         <div>
-          <div className="w-full h-48 bg-gray-100 rounded-md overflow-hidden">
-            <AspectRatio ratio={16/9}>
-              <img 
-                src={report.thumbnail}
-                alt={`Preview of ${report.name}`}
-                className="object-cover w-full h-full"
-              />
-            </AspectRatio>
+          <div className="w-full h-48 bg-gray-100 rounded-md overflow-hidden flex items-center justify-center">
+            <div className="text-center text-gray-500">
+              <FileText className="h-12 w-12 mx-auto mb-2" />
+              <p>Report Preview</p>
+              <p className="text-sm">{report.report_type}</p>
+            </div>
           </div>
         </div>
         
         <div className="grid grid-cols-2 gap-3 text-sm">
           <div>
-            <p className="text-gray-500">Provider</p>
-            <p className="font-medium">{report.doctor}</p>
+            <p className="text-gray-500">Type</p>
+            <p className="font-medium">{report.report_type}</p>
           </div>
           <div>
             <p className="text-gray-500">Date</p>
-            <p className="font-medium">{report.date}</p>
+            <p className="font-medium">{new Date(report.created_at).toLocaleDateString()}</p>
           </div>
           <div>
             <p className="text-gray-500">Format</p>
-            <p className="font-medium">{report.format}</p>
+            <p className="font-medium">{report.file_format || 'N/A'}</p>
           </div>
           <div>
             <p className="text-gray-500">Size</p>
-            <p className="font-medium">{report.size}</p>
+            <p className="font-medium">{report.file_size_bytes ? `${Math.round(report.file_size_bytes / 1024)} KB` : 'N/A'}</p>
           </div>
         </div>
         
         <div>
           <p className="text-gray-500 text-sm">Description</p>
-          <p className="text-sm">{report.description}</p>
+          <p className="text-sm">{report.description || 'No description available'}</p>
         </div>
         
         <Button 

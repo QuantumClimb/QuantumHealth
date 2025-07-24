@@ -3,11 +3,11 @@ import React from 'react';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Card, CardContent } from '@/components/ui/card';
 import ReportList from './ReportList';
-import type { Report } from '@/mock/reportData';
+import type { MedicalReport } from '@/services/supabaseService';
 
 type ReportTabsProps = {
-  filteredReports: Report[];
-  onReportSelect: (report: Report) => void;
+  filteredReports: MedicalReport[];
+  onReportSelect: (report: MedicalReport) => void;
 };
 
 const ReportTabs = ({ filteredReports, onReportSelect }: ReportTabsProps) => {
