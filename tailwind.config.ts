@@ -1,4 +1,3 @@
-
 import type { Config } from "tailwindcss";
 
 export default {
@@ -63,14 +62,14 @@ export default {
 					border: 'hsl(var(--sidebar-border))',
 					ring: 'hsl(var(--sidebar-ring))'
 				},
-				// Custom HEALTHY app colors
+				// Refined HEALTHY app colors (deeper, more vibrant)
 				healthy: {
 					50: '#f0fdfa',
 					100: '#ccfbf1',
 					200: '#99f6e4',
 					300: '#5eead4',
-					400: '#2dd4bf', // Main teal accent
-					500: '#14b8a6',
+					400: '#2dd4bf', 
+					500: '#14b8a6', // Core primary accent
 					600: '#0d9488',
 					700: '#0f766e',
 					800: '#115e59',
@@ -82,8 +81,8 @@ export default {
 					100: '#dcfce7',
 					200: '#bbf7d0',
 					300: '#86efac',
-					400: '#4ade80', // Main green accent
-					500: '#22c55e',
+					400: '#4ade80', 
+					500: '#22c55e', // Secondary accent
 					600: '#16a34a',
 					700: '#15803d',
 					800: '#166534',
@@ -125,12 +124,27 @@ export default {
 						opacity: "1"
 					}
 				},
+                "blob": {
+                    "0%": {
+                        transform: "translate(0px, 0px) scale(1)"
+                    },
+                    "33%": {
+                        transform: "translate(30px, -50px) scale(1.1)"
+                    },
+                    "66%": {
+                        transform: "translate(-20px, 20px) scale(0.9)"
+                    },
+                    "100%": {
+                        transform: "translate(0px, 0px) scale(1)"
+                    }
+                }
 			},
 			animation: {
 				"accordion-down": "accordion-down 0.2s ease-out",
 				"accordion-up": "accordion-up 0.2s ease-out",
 				"fade-in": "fade-in 0.3s ease-out",
 				"scale-in": "scale-in 0.2s ease-out",
+                "blob": "blob 7s infinite"
 			},
 			fontFamily: {
 				sans: ["Inter", "sans-serif"],

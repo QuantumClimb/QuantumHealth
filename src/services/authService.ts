@@ -3,7 +3,8 @@
  * Handles user authentication, registration, and session management
  */
 
-import { createClient, SupabaseClient, User, Session } from '@supabase/supabase-js';
+import { User, Session } from '@supabase/supabase-js';
+import { supabase } from './supabaseService';
 import { multiTenantService } from './supabaseService';
 
 // ===== TYPE DEFINITIONS =====
@@ -114,16 +115,11 @@ export interface AuthError {
 // ===== AUTHENTICATION SERVICE =====
 
 class AuthService {
-  private supabase: SupabaseClient;
+  private supabase = supabase;
   private currentUser: AuthUser | null = null;
   private currentSession: Session | null = null;
 
   constructor() {
-    this.supabase = createClient(
-      import.meta.env.VITE_SUPABASE_URL,
-      import.meta.env.VITE_SUPABASE_ANON_KEY
-    );
-
     // Initialize session from storage
     this.initializeSession();
   }
@@ -179,19 +175,17 @@ class AuthService {
         throw new Error('No tenant context available');
       }
 
-      // 3. Create user role
+      // 3. Create user role in tenant_users table
       const { error: roleError } = await this.supabase
-        .from('quantumhealth_user_roles')
+        .from('quantumhealth_tenant_users')
         .insert({
           user_id: authData.user.id,
           tenant_id: tenant.id,
-          role_type: credentials.role,
-          is_active: true
+          role_type: credentials.role
         });
 
       if (roleError) {
-        // Clean up auth user if role creation fails
-        await this.supabase.auth.admin.deleteUser(authData.user.id);
+        console.error('Role creation error:', roleError);
         throw new Error('Failed to assign user role');
       }
 
@@ -273,12 +267,11 @@ class AuthService {
 
       // 3. Verify user role and tenant access
       const { data: roleData, error: roleError } = await this.supabase
-        .from('quantumhealth_user_roles')
+        .from('quantumhealth_tenant_users')
         .select('*')
         .eq('user_id', authData.user.id)
         .eq('tenant_id', tenant.id)
         .eq('role_type', credentials.role)
-        .eq('is_active', true)
         .single();
 
       if (roleError || !roleData) {
@@ -291,8 +284,8 @@ class AuthService {
         throw new Error('Failed to load user profile');
       }
 
-      // 5. Create session record
-      await this.createSessionRecord(authData.user.id, tenant.id);
+      // 5. Create session record (disabled for now)
+      // await this.createSessionRecord(authData.user.id, tenant.id);
 
       this.currentUser = user;
       this.currentSession = authData.session;
@@ -344,10 +337,10 @@ class AuthService {
 
   async logout(): Promise<void> {
     try {
-      // 1. Invalidate session record
-      if (this.currentSession) {
-        await this.invalidateSessionRecord(this.currentSession.access_token);
-      }
+      // 1. Invalidate session record (disabled for now)
+      // if (this.currentSession) {
+      //   await this.invalidateSessionRecord(this.currentSession.access_token);
+      // }
 
       // 2. Sign out from Supabase
       const { error } = await this.supabase.auth.signOut();
@@ -431,10 +424,9 @@ class AuthService {
     try {
       // 1. Get user role
       const { data: roleData, error: roleError } = await this.supabase
-        .from('quantumhealth_user_roles')
+        .from('quantumhealth_tenant_users')
         .select('*')
         .eq('user_id', userId)
-        .eq('is_active', true)
         .single();
 
       if (roleError || !roleData) {

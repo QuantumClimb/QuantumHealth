@@ -11,8 +11,17 @@ import SEO from '@/components/SEO';
 const Register = () => {
   const navigate = useNavigate();
 
-  const handleSuccess = (user: unknown) => {
-    // User successfully registered, they'll be redirected by the component
+  const handleSuccess = async (user: { role?: 'patient'|'doctor'|'admin'; id?: string } | null) => {
+    try {
+      if (user?.role === 'doctor') {
+        // For new doctor registrations, redirect to pending approval
+        // They need to confirm email before setting up clinic
+        navigate('/pending-approval');
+        return;
+      }
+    } catch (error) {
+      console.error('Error handling registration success:', error);
+    }
     console.log('Registration successful:', user);
   };
 

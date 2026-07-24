@@ -1,0 +1,1055 @@
+📁 Folder structure for: QuantumHealth
+
+├── .cursor/
+│   └── mcp.config.json
+├── .env
+├── .env.local
+├── .git/
+│   ├── COMMIT_EDITMSG
+│   ├── FETCH_HEAD
+│   ├── HEAD
+│   ├── ORIG_HEAD
+│   ├── config
+│   ├── description
+│   ├── hooks/
+│   │   ├── applypatch-msg.sample
+│   │   ├── commit-msg.sample
+│   │   ├── fsmonitor-watchman.sample
+│   │   ├── post-update.sample
+│   │   ├── pre-applypatch.sample
+│   │   ├── pre-commit.sample
+│   │   ├── pre-merge-commit.sample
+│   │   ├── pre-push.sample
+│   │   ├── pre-rebase.sample
+│   │   ├── pre-receive.sample
+│   │   ├── prepare-commit-msg.sample
+│   │   ├── push-to-checkout.sample
+│   │   ├── sendemail-validate.sample
+│   │   └── update.sample
+│   ├── index
+│   ├── info/
+│   │   └── exclude
+│   ├── logs/
+│   │   ├── HEAD
+│   │   └── refs/
+│   │       ├── heads/
+│   │       │   └── main
+│   │       └── remotes/
+│   │           └── origin/
+│   │               ├── HEAD
+│   │               └── main
+│   ├── objects/
+│   │   ├── 00/
+│   │   │   └── 145b9a0bc37705ce40ea1f644440c26ea1f68b
+│   │   ├── 01/
+│   │   │   └── b8b6d4f716ff7c26065bc9e46aebd932729fc1
+│   │   ├── 03/
+│   │   │   └── d88e8e520354c7fc0955837055a60b09751502
+│   │   ├── 04/
+│   │   │   └── b8027521577feb3ec587e08208f16a72a22564
+│   │   ├── 05/
+│   │   │   ├── 1462eacaac9c2e43b5f51e4cfe029652de803d
+│   │   │   └── b3ddc2de3d378f871e405b6dc46ae53eeff9b4
+│   │   ├── 06/
+│   │   │   └── c01790805c5fcebc14824468a99a7fc9cad0d4
+│   │   ├── 07/
+│   │   │   └── 956eef70b77fefda645c27607f68b5d65646ac
+│   │   ├── 0a/
+│   │   │   └── ec6e309310ab9d0e8bcfef321c951c7be430c1
+│   │   ├── 0b/
+│   │   │   ├── 0e43e6bc8079ff97d899dddb025d5b09f20ee2
+│   │   │   └── e34295de0e064cc3043a25bbeaea334c721331
+│   │   ├── 0e/
+│   │   │   ├── a65ad623463e0212bb53df014e2c19fe24fccd
+│   │   │   └── e59587e35d98db7568ed2b0ca7378d38241eda
+│   │   ├── 0f/
+│   │   │   └── cdd7419a8962937de1483d39efd8b0875d0316
+│   │   ├── 10/
+│   │   │   ├── 35167363c23d973bc1ecd7c5b4bd51f1533f50
+│   │   │   ├── 5fb650055b71797510142dfa041b5d80808041
+│   │   │   └── 917d5a7b7cf55a068a78eef7c68731bc215e39
+│   │   ├── 11/
+│   │   │   ├── 28edfceec064e590995e7e10251c658290ee2d
+│   │   │   └── f02fe2a0061d6e6e1f271b21da95423b448b32
+│   │   ├── 12/
+│   │   │   ├── 2cf4a4ab168473fe1126a39f7efba82da7f63e
+│   │   │   ├── 9b1a30fdbe84d753a2526f13a20e0857f420ba
+│   │   │   └── bfb563a46df4cd3481585049bb8ff228634337
+│   │   ├── 13/
+│   │   │   └── 5c43354670d212a9c4c298f5c6d9330fe50488
+│   │   ├── 14/
+│   │   │   ├── 067ab9febe9426aa3f5d5ce69d3f2181e9765a
+│   │   │   └── 19f56695be517ec78fe8ad26a6f7da3a7d53b2
+│   │   ├── 16/
+│   │   │   ├── 0304d398161f97165233dfe6636caa631bfdfb
+│   │   │   └── 3d49b721621f9b9f67b6033bd53103a8390702
+│   │   ├── 18/
+│   │   │   └── e60669b3039df351d7254fc500420c49d2da8b
+│   │   ├── 19/
+│   │   │   ├── 0f7c85c143ef93c03c1f144bb9fb15e9240b9d
+│   │   │   └── a85d58433153b522173f6fa9e0d1501de54224
+│   │   ├── 1a/
+│   │   │   ├── 45aa59ae00ec27b2ac675b37db200b17333eca
+│   │   │   └── 566bf5537500fec3e02f3e6249e51d0ec23cea
+│   │   ├── 1b/
+│   │   │   └── dc1d66ab5752bb8929bbb4ca0daee1df5f30da
+│   │   ├── 1c/
+│   │   │   └── a20b0ca57bbae1d07c81798970dbe1be929465
+│   │   ├── 1d/
+│   │   │   └── bd7266fa682b54f6f8cc0b239396ed98d64431
+│   │   ├── 1e/
+│   │   │   └── 77b9ca55408ff4c8516233a90bcff3fa0cbeb4
+│   │   ├── 1f/
+│   │   │   ├── 250a4c1fc7229257c4c7191302875e97fe5fe1
+│   │   │   └── 961dda22610fb766c57b1e28cf1b3fa98d1160
+│   │   ├── 20/
+│   │   │   ├── 834991adb90fe8ee679d4f155ec285ca1c05df
+│   │   │   └── e4ca7bae8f96c835c8880a577ccbfdca481fc0
+│   │   ├── 21/
+│   │   │   └── 304e947e396948a80d50d8eed252c24dcc75c2
+│   │   ├── 22/
+│   │   │   └── 223ca64237b4ae384756340a36ab5b87f99bd8
+│   │   ├── 23/
+│   │   │   └── 189ca3d4162d04f13a99784743f048ce735b64
+│   │   ├── 24/
+│   │   │   └── 7d6a519f38bb5ea7ed6d002f164f2cee81d8a3
+│   │   ├── 25/
+│   │   │   └── 8ad3145035e8a7c3750f8c1a6cd80d8c06f5b7
+│   │   ├── 26/
+│   │   │   └── 77b5a3ea2e203dac397e867dbfed4b4518d1b9
+│   │   ├── 2b/
+│   │   │   └── 0fe1dfef3b17850bbac040665f514a8ffd0f15
+│   │   ├── 2c/
+│   │   │   ├── 14125ac48b874740770da80d9e424daf1db58b
+│   │   │   ├── 5848022b10c863946f1ea9e239ff1ab5c7350b
+│   │   │   └── 8bcdd0620a6fbc2ffd0e9118b66722583c5274
+│   │   ├── 2d/
+│   │   │   └── e610b1d8f7ead178bff7376bcc96fb7b62f67e
+│   │   ├── 2e/
+│   │   │   ├── 7af2b7f1a6f391da1631d93968a9d487ba977d
+│   │   │   └── a81d742651dca36a782fd6ab3220496a560092
+│   │   ├── 31/
+│   │   │   ├── 33162c20350e1741b94b8d2ff77b811bec8363
+│   │   │   ├── 46b8fc1fa00e6e0272f9b535ff49933958874b
+│   │   │   └── 60ad0f396d96ec2f499e3e76aae44656f58497
+│   │   ├── 32/
+│   │   │   └── e0122d3273208e97d5024356b57de1ed694a67
+│   │   ├── 33/
+│   │   │   └── 50091d1938221290143ed1d7a314d4c59e369f
+│   │   ├── 36/
+│   │   │   ├── 496a28727a3643b4212a14225d4f6cbd50bda5
+│   │   │   ├── 92d380569c924f29026a363debb5f31ff300d5
+│   │   │   └── 98b09760040bedd9d409bcfa51d8795a7fe371
+│   │   ├── 37/
+│   │   │   └── 0c0539848d9d33ffea9d54a04b9c2ed5ef5d65
+│   │   ├── 39/
+│   │   │   ├── 8ad2c3685034f8b2cecbaf6b2f38f4e554c344
+│   │   │   └── c600d684d0e9c3a967d3b017e28582bd06c970
+│   │   ├── 3a/
+│   │   │   ├── 892bf3e9306a937aa499c48c3b0256af327baa
+│   │   │   └── 8946b6bde99cbab3b76014fae832db6cc3f211
+│   │   ├── 3e/
+│   │   │   ├── 5299917fb55decf8ba88f03c964d984c43cb18
+│   │   │   ├── 63b5cce137f78495d7a2d8fc38f122f75f8d38
+│   │   │   └── c0f2d7e56611109051198939c235eb569ea15f
+│   │   ├── 3f/
+│   │   │   └── c5acef923ca793fbf5e5a9f8b4a2509d8d214d
+│   │   ├── 41/
+│   │   │   └── fa7e0561a3fdb5f986c1213a35e563de740e96
+│   │   ├── 42/
+│   │   │   └── b3349aad1e7a6dbfe29490206e4dd24d676e8e
+│   │   ├── 43/
+│   │   │   ├── 4c7fa7adefb820d003ba221335f37dd27c4f4d
+│   │   │   ├── b43b48b84d3045a442409006d5cb8c5f35adfd
+│   │   │   └── ebe839668ab3ec9eafab308e6cc282da515eb3
+│   │   ├── 44/
+│   │   │   └── 40b4d12b22df8960c4b37b1a48c6ece341fc8e
+│   │   ├── 46/
+│   │   │   ├── 03f8b3d5eee5fe162bb69a02ce8546d4358cc3
+│   │   │   └── 89f54fb72471bb4e7a974e5771ca3bbf91fc5d
+│   │   ├── 49/
+│   │   │   └── b94e6de58610ba9892f78a30274629a69ff24c
+│   │   ├── 4a/
+│   │   │   └── 4bccc8d9e0e4cdffaaa6a6d89dc20d291485e5
+│   │   ├── 4b/
+│   │   │   └── c04a698677253f44f55d4816ca54c179e852d0
+│   │   ├── 4d/
+│   │   │   └── 217520cb0f651ff743fddc924c3d2aba2e2408
+│   │   ├── 4e/
+│   │   │   └── 1084ab06c16f5404b06e3ca19d67f5f368a951
+│   │   ├── 4f/
+│   │   │   ├── 6ef812901d14b95ca65091bdf7f100b0771439
+│   │   │   └── 805c4a50c797ce7e15c7e88e96e6f414dfbc92
+│   │   ├── 50/
+│   │   │   ├── 3b636f69619a89ea08d68a4f4e84d3f6122517
+│   │   │   └── eac8d8aa476ba9d0b1d14e529dcdc97817f1c8
+│   │   ├── 52/
+│   │   │   └── 09e5bb3e1edc2c2e007ab9bb02b2613b1ec81d
+│   │   ├── 53/
+│   │   │   └── 0183f17db4f62c423da8bc2e28479a80186e93
+│   │   ├── 55/
+│   │   │   └── 4cd4c7a6517b66743ad5687379e4073c3839f6
+│   │   ├── 56/
+│   │   │   └── a0979c02183994b324f8039cf710cdf786bcb7
+│   │   ├── 57/
+│   │   │   ├── 1263ec7c12ffeaa2ed36b6e3530f96e47bf474
+│   │   │   ├── 21040c974d5f7b94d1e5c752c00ddeac59b6fa
+│   │   │   └── 2b3c83fcd02c3b3c74a5f64caa94952f36b41b
+│   │   ├── 58/
+│   │   │   └── b6cf4c7be57cb42beff196b6e2aa75118cfbd2
+│   │   ├── 59/
+│   │   │   └── c28f140144e6619b6bdb14414b7a9979971848
+│   │   ├── 5d/
+│   │   │   └── 564bed61009a1240861229fcdecebfbf0aeff7
+│   │   ├── 5e/
+│   │   │   ├── 546753981e7b0b8ed19d88ef3880b341c90e8d
+│   │   │   └── e0385796d8af2ef48296c920960842c09de203
+│   │   ├── 5f/
+│   │   │   └── d6d50828823b631e426c5da6f8cc3535a70d37
+│   │   ├── 60/
+│   │   │   ├── 18e701fc7dd0317cda9eceea390524322e8a05
+│   │   │   └── d0836c903404bf4d1be645047e3f5fe8c4c572
+│   │   ├── 62/
+│   │   │   ├── af9fc1608bcae8fefae0a00724d89a80201ca9
+│   │   │   └── e1bd1a4fff527a7acf1f158b87abb52cbdc134
+│   │   ├── 63/
+│   │   │   ├── 03ac432325d65fe9d61d649c48387c9982db3e
+│   │   │   ├── 2129c62c57dc1dd351d5aeee8a4f4c9ce2dae8
+│   │   │   └── 3a8063d28b70f7c92242eeed08e78b570439c0
+│   │   ├── 64/
+│   │   │   ├── 0dcf4b69ec07d81e48e93ebbb15f9da3722052
+│   │   │   └── 252f9da85b22a09df6f7cd5612981baf521fbd
+│   │   ├── 65/
+│   │   │   └── 007087a4d95bd4655fab9eeb458543e32e950a
+│   │   ├── 66/
+│   │   │   └── a033643b90c4bb413be550b8876b6acbc919e9
+│   │   ├── 68/
+│   │   │   ├── 3faa793819982d64e21cb2939666fd6d4a7b13
+│   │   │   ├── 551b9276b4164a8263aa58d385db30f81a4453
+│   │   │   └── e9d41c43aae32ee5314e0006e01345589570f4
+│   │   ├── 69/
+│   │   │   └── 353aae923532b8303908e7693553907274ff11
+│   │   ├── 6b/
+│   │   │   └── b076b02716fa88bcf3eba198172fd9599b5cff
+│   │   ├── 6c/
+│   │   │   └── 67edff67a48c6ac1c46f25a6d468dd461e66cb
+│   │   ├── 6d/
+│   │   │   └── 7f12265ba0338704f013930ce4d52c56527dd1
+│   │   ├── 6e/
+│   │   │   └── f12fdee058d1c316280c3554649369337ce9e0
+│   │   ├── 71/
+│   │   │   ├── a5c325cdce2e6898d11cfeb4f2fdd458e3e2da
+│   │   │   └── a6fbe6d84d2ab183fe544777e9ad0b4f86ffa9
+│   │   ├── 72/
+│   │   │   └── 1ed449aeaa2e32a7b26f12b6591371d1bbd5a8
+│   │   ├── 74/
+│   │   │   └── 17ccda23ba45c4e4681097d4766f28676c4fe6
+│   │   ├── 76/
+│   │   │   ├── 9d4974773dc6d69add2b852de9ac28038382bd
+│   │   │   └── 9ff7aa709f0d7a1afe2a87d180447fc26749e4
+│   │   ├── 77/
+│   │   │   └── 0fa4a9f94587bb4813982f6e9f1b27ffff0e8b
+│   │   ├── 79/
+│   │   │   ├── 3d9a155f269ef73b8380d9d5bef387fceb5b05
+│   │   │   └── cb27eb381dc5aca9499ed8f59a7a9a36666fde
+│   │   ├── 7a/
+│   │   │   └── 9d1bcab2765f6e540992c8c510847a67074bac
+│   │   ├── 7b/
+│   │   │   └── 1dbe4c4515258f91cad0234c685771859e962a
+│   │   ├── 7d/
+│   │   │   └── 7f445020c8955752f9bb07574a202b4e6a787d
+│   │   ├── 7f/
+│   │   │   ├── 3502f8b2820be1d6f0aa4c1ffaa351799c1ed3
+│   │   │   ├── 60758461d89f79488f1c8b026cb5b578da7219
+│   │   │   ├── df7f7224460dbac3f9e10873c7db76ca480a3b
+│   │   │   └── ec98e02e21d6bd45b64b8a7de5cdec0b44a814
+│   │   ├── 81/
+│   │   │   ├── 1a8c030a553a736e7526d59c8edc8f0054e7fc
+│   │   │   └── 9edbcc0450f7e18a4ca6462b6f5f6a245c7285
+│   │   ├── 83/
+│   │   │   ├── 05202672805960f15e3b5e3ef8bbf9c8f43c6e
+│   │   │   └── 86c3b168c4498701e79f437e594004d087d297
+│   │   ├── 86/
+│   │   │   ├── 3ff0148f0bb239b93c44a93baf14073cd3ae23
+│   │   │   ├── 806e295971cad9d65220054bf796d79acc7038
+│   │   │   └── d0204618603348476a273215cac84bf2511a2b
+│   │   ├── 87/
+│   │   │   └── 22561cf6bda62d62f9a0c67730aefda971873a
+│   │   ├── 88/
+│   │   │   └── 9b3184ed20ba97d92898ca49bc9396fda46525
+│   │   ├── 8b/
+│   │   │   ├── 31307d2d0d33595d1e4c90ad092a7ba18a28ea
+│   │   │   ├── 4d75f050a8535f831dff5f19e8e1fb7e8ab013
+│   │   │   └── ca09547c48602c707bb3e111f24ee2dc75665c
+│   │   ├── 8e/
+│   │   │   ├── 0008ea32ddb3351c226829ef59a881bc61c92e
+│   │   │   └── f6cadf7045f145f7f10220caf11676c552602e
+│   │   ├── 8f/
+│   │   │   └── 4178ea75e1d051c81be04bcf4fb1182120b7fb
+│   │   ├── 91/
+│   │   │   ├── 8e523e90d9b9415e02dc12d9610a85b710bcc7
+│   │   │   ├── caeccc2019d92e9a9c9e9d03ec4065700e4736
+│   │   │   ├── e07afa3eab02942eb077507093fea2d1dad62c
+│   │   │   └── e8fba6cd7a469f2406f50b0f881b2f9d4e6a86
+│   │   ├── 93/
+│   │   │   ├── 6b791321f224f137feb9da0a530d836fdee7df
+│   │   │   ├── 866ff37831585a64945121691c87b8d8c35398
+│   │   │   └── fd54d3e041a944bf73a9babd8a295522e01b00
+│   │   ├── 94/
+│   │   │   └── f8527797853727e227ab8e78d7e0d263f7646b
+│   │   ├── 97/
+│   │   │   └── 455f7faed1ee33d963b1cf95e34f7fcf2e1e38
+│   │   ├── 98/
+│   │   │   └── abccd3045c5df47e9c2f5bb4f3a20a0a9fca08
+│   │   ├── 99/
+│   │   │   └── 1f56ecb117e96284bf0f6cad3b14ea2fdf5264
+│   │   ├── 9a/
+│   │   │   └── d3f38a320956b1f53f5a2dd6b6bb7259380f91
+│   │   ├── 9b/
+│   │   │   └── 9f451ce6814e5b2480dcc90775fec9af8ac051
+│   │   ├── 9c/
+│   │   │   ├── 2b9bf3705d8421bef00704c0c52e83d371ca11
+│   │   │   ├── 9c4f16d4d9103377a96f6624dfaddc28e73075
+│   │   │   └── aa0d4739878dbd1244ebb2f8e43dd32cb2f922
+│   │   ├── 9e/
+│   │   │   ├── 5ff63d6f091ae8d197360d4db2d9ab69520fa2
+│   │   │   ├── c5773058e2528f049790c48a620bf8989a06b4
+│   │   │   ├── cac28ee639d98fbc161a904b5bca0e022e28d6
+│   │   │   └── f28632a491f539f0963f5d63c8778d799bcedf
+│   │   ├── a0/
+│   │   │   ├── 4438ae9ee0748d904659a9ca9f2dcb7efabf7f
+│   │   │   └── 54d8780c0d169a7b6a4148ab0b98b7f38baa11
+│   │   ├── a1/
+│   │   │   ├── 5de183de491599906a03ee31aa45996bae77bf
+│   │   │   └── bc4602a52a79afb790bd6daf743f96f8fd8dd9
+│   │   ├── a2/
+│   │   │   ├── 1d77ee708c3d861fb246ecab7f6dc36e0e605b
+│   │   │   ├── 3e7a281287e18b1c332498491b6bcc8d8e2b70
+│   │   │   └── 821e59a7e4e73a9613230c1fdbb172f71ae3a3
+│   │   ├── a3/
+│   │   │   └── 465ac14357822440ab5e4155741f813e20a1cb
+│   │   ├── a6/
+│   │   │   ├── 42c320047d002f1b7095b7cbc2c965648aca41
+│   │   │   └── 52b369f04b84503071f999a0302535c468f420
+│   │   ├── a8/
+│   │   │   └── 22477534192c4df5073e4015f7461e739d3344
+│   │   ├── aa/
+│   │   │   └── 58baa29c676db7b14a37436a9662107b0111ec
+│   │   ├── ab/
+│   │   │   └── b06b32590cb53b6b1dc1a97d5fd144ceb97710
+│   │   ├── ac/
+│   │   │   └── 207f350eb0463ee664f91838e7ef1bdec93259
+│   │   ├── ae/
+│   │   │   └── f792e625ac081115db779615320a4c8558ddf3
+│   │   ├── af/
+│   │   │   ├── 6450e1c54699eab23035bef48da1959a3da49f
+│   │   │   ├── a13ecfa3bd0f4a553a510b856c5800382e139b
+│   │   │   ├── c35e31279a2345bcc4d503f1c9323478cc3cd1
+│   │   │   └── e5da62559ca05a0eb5c9415a1e20bd47b37af9
+│   │   ├── b0/
+│   │   │   ├── 26e5b37e0a339fccf71fccfc7abab59682b190
+│   │   │   └── aef21be259883fe159d3176ab46c6841c28a07
+│   │   ├── b2/
+│   │   │   ├── 35407a909ad45f614ce71b07c93045c3113f09
+│   │   │   └── ddf4579b1fc485b1bb2049a3b048e89c368cfc
+│   │   ├── b3/
+│   │   │   ├── 307953a73f59c859b13e7caec67e2f8f77acc0
+│   │   │   └── 3468dea989e45c859a47b23bd8486ee47b81af
+│   │   ├── b5/
+│   │   │   └── 6e67b3cc0a8619092901201c9fcc5c6fe0a031
+│   │   ├── b6/
+│   │   │   ├── d0454b4814b65911cc5b8698bf5a847821e1ee
+│   │   │   └── fd5fa61bfae1e2bc8da17944e31f3bbfd312a0
+│   │   ├── b8/
+│   │   │   └── e7ce88088d1c95dd95c8d6b2649e4df7d9ad97
+│   │   ├── b9/
+│   │   │   └── d355df2a5956b526c004531b7b0ffe412461e0
+│   │   ├── bb/
+│   │   │   ├── 3aff8027af5885581da0fb06f377f98365f776
+│   │   │   └── ba7e0ebf26c29526552f2dc4e8e3ecea3d641a
+│   │   ├── bc/
+│   │   │   └── 7a5bbde5e5fd26067d75c03e94519b9160f32f
+│   │   ├── bd/
+│   │   │   ├── 0c391ddd1088e9067844c48835bf4abcd61783
+│   │   │   └── facf001fa5eaab6d671893d5b806732b65338d
+│   │   ├── be/
+│   │   │   └── 8cbfd324ba434d7d37fc458668d9279daa9d01
+│   │   ├── c1/
+│   │   │   ├── 7b0ccaa95dccfb96c75618e078efd263e54fd0
+│   │   │   └── 82712408fac66827588895a8d7125a8ed0eb26
+│   │   ├── c2/
+│   │   │   └── 3630eb841533af4030574e54106f0fdf0fc677
+│   │   ├── c3/
+│   │   │   ├── af7a64d16c471d7c6e759db0e79f03ada23b67
+│   │   │   └── ff4f8290168632566359eb73af822928b4c219
+│   │   ├── c4/
+│   │   │   └── abbf37f217c715a0eaade7f45ac78600df419f
+│   │   ├── c9/
+│   │   │   └── 32d660f5a7ba90c607f58251eca6d3c347dbdc
+│   │   ├── cb/
+│   │   │   ├── 0f4791812b05b0545b39a7af56fc3aeec96fe1
+│   │   │   └── 5526092b6eb90047dcfbc87c51a12d354daac7
+│   │   ├── cd/
+│   │   │   └── 3cb0ec783fcd72906f275a372d50259d5853b8
+│   │   ├── ce/
+│   │   │   ├── 166fe29b41afbfa9ff2f36a965f852cff07dbe
+│   │   │   ├── ac5ef204faa6017f6ba69f46f921a5bc2e16f7
+│   │   │   └── f061974ed54f3762da715dd31cf9b13d13549c
+│   │   ├── cf/
+│   │   │   └── 253cf17056ce04827219643e484ea99c77cf6b
+│   │   ├── d1/
+│   │   │   ├── 1c2993f279769a0df4ba4313e1f0c7c7c7cd28
+│   │   │   ├── 297b68c9dc8dfa6d30826181f0a06595f9a029
+│   │   │   └── 9affa0a1c1a2f0390fb1057e9b8fbe10588f71
+│   │   ├── d2/
+│   │   │   └── a7c6cda3051428d160b033f52ea86e51f05030
+│   │   ├── d3/
+│   │   │   └── df8b81ba041b773c31b4249903e0c835af1c45
+│   │   ├── d5/
+│   │   │   ├── 54ec82282ae4e502a950ab21240bfdb5a11e21
+│   │   │   └── 6eb4e4410f729c04aa72ddba8d56f57768d6cd
+│   │   ├── d6/
+│   │   │   └── 091ddaee2804fdd39cc71e7ff865d55a8db844
+│   │   ├── d8/
+│   │   │   └── 62885d9aa909148c6a91416d354a0c37b8e821
+│   │   ├── d9/
+│   │   │   └── 84fde300d64f16bb2e88ffc9fd10d3d1e3e1b1
+│   │   ├── da/
+│   │   │   ├── 04008c727982ec1c06e5f441ce69a47ca844ae
+│   │   │   ├── 5a21031b806f90f6efa702bf0bbc95182a0f08
+│   │   │   ├── c389896759825b57c9ddfc87770f9bde4a0f3b
+│   │   │   └── ff346b78203f38a4bc31160e953313095729fc
+│   │   ├── dc/
+│   │   │   ├── 1784c4a426e3b87803e8262f8ff01a6f3b684d
+│   │   │   └── eac48e4b802569503fc6b6dc4d9aa0f124ec6e
+│   │   ├── dd/
+│   │   │   └── bdd01d8d1491ab772790db8d40c5ac0a2630f3
+│   │   ├── de/
+│   │   │   └── edb261b2d3d500b1d35dc8004721f3d08824d5
+│   │   ├── df/
+│   │   │   └── 600e34c8394376ab063f97444dbea44299e62d
+│   │   ├── e0/
+│   │   │   ├── 883cec1b3120f1ca1e785d88921c2ddaa4393d
+│   │   │   └── eaac03b39702a164608795a1c81b1a5e680d23
+│   │   ├── e1/
+│   │   │   ├── 21f0aea0b32952ae54d7db8965a2c15168b13e
+│   │   │   └── 61daec03130190dcfb597c8632f9df4ba407f5
+│   │   ├── e2/
+│   │   │   ├── 5afb114336358890b4a3d83bc60cda884331cc
+│   │   │   ├── 99984e8b7f780a504005f5be47570db4c1e103
+│   │   │   ├── c373ef40ac6e994a81d273e859f231c3f34532
+│   │   │   └── eb5b590975035b5c4b7cc548a197f25e1d1050
+│   │   ├── e3/
+│   │   │   └── 47fea7004b6263c9011e943dc7960017eab501
+│   │   ├── e4/
+│   │   │   ├── c9b24be9801e7235add83b4719a2427b32fa27
+│   │   │   ├── eaff61ab1cde3f4d737f06122a15727b7129a7
+│   │   │   └── f7f795fa71df73d73fa0f5dc72d8b04af63e43
+│   │   ├── e5/
+│   │   │   └── 857377aac8350df70148c845b8af0223734670
+│   │   ├── e6/
+│   │   │   ├── 7846f70fbbe40407fc84875913595ab31c4a47
+│   │   │   └── a723d06574ee5cec8b00759b98f3fbe1ac7cc9
+│   │   ├── e7/
+│   │   │   └── 63910b27fdd9ac872f56baede51bc839402347
+│   │   ├── ea/
+│   │   │   └── 40d196dc72673f36c4084bf56457385edc855e
+│   │   ├── eb/
+│   │   │   └── f5c281ee7fbbf86462b33b7b9955d884d57580
+│   │   ├── ed/
+│   │   │   └── b720dddd928f62e0cfa4c1f92cb63a3f92fed1
+│   │   ├── ee/
+│   │   │   └── 075f3e9cef71f4b9d8e39521e34af84e34891b
+│   │   ├── ef/
+│   │   │   └── 049c5ea4f9ebd6f536bf876786517fdef13377
+│   │   ├── f0/
+│   │   │   ├── 00e3ef5176395b067dfc3f3e1256a80c450015
+│   │   │   ├── 3cfb862b8fa365e19d98a3b88cb92dba997515
+│   │   │   ├── 4b6d2c7b4757eb757a3d6165d2b05518f5c4cf
+│   │   │   └── fe940512c009332cabb09fd43895dfbed9db66
+│   │   ├── f2/
+│   │   │   ├── 7a0f7c323077597e40847a4a9112e94d826af0
+│   │   │   └── 9e3f1610677762f3d97aaefc9ce40a9d410948
+│   │   ├── f5/
+│   │   │   ├── 7534baa860eb7c0c79ad99418d51f9fe3cfe7e
+│   │   │   └── 7fffdb5a07cd21b12f8c014513475a6980a469
+│   │   ├── f6/
+│   │   │   ├── 447c189ce6ed3167956147d297d74e0143a167
+│   │   │   └── 96a82364d738c9de1dcb59e7fcdf396df520b6
+│   │   ├── f7/
+│   │   │   ├── 89173a64e5614fabadf010d1a504b1aba2942d
+│   │   │   └── c7173b139a0a0d1523e3a91cfce0a4e15c3026
+│   │   ├── f8/
+│   │   │   └── 8657bd4dabf2a484a5b8506b8a8d0f0c69e152
+│   │   ├── f9/
+│   │   │   └── f60412d3e1ceb3db8f3da584ce88dac7b2ea9a
+│   │   ├── fa/
+│   │   │   ├── 904a708124acd4fd864a085922157ea31b1372
+│   │   │   └── aebdc1b4d0b0058c84144dcea1b0ee746b5b15
+│   │   ├── fb/
+│   │   │   └── 5f2d63f7c2b9b62ef1a79e3339a13753560c6f
+│   │   ├── fd/
+│   │   │   └── cec2061e729d67d0d516b73acf8db63de96324
+│   │   ├── fe/
+│   │   │   ├── 0bed2ae6ac75e25333eeb98843f493daef8013
+│   │   │   ├── 56d4d3ad53f9c3ec9434f2d39feb7571a3b52f
+│   │   │   └── 8cde1f61a2d022eb460eaf5d249cdf4127f045
+│   │   ├── ff/
+│   │   │   ├── 255cc4cc6bc037a65df2738cc9469455c87463
+│   │   │   └── 914de4917afb9d80de6c20375a6ad511994817
+│   │   ├── info/
+│   │   └── pack/
+│   └── refs/
+│       ├── heads/
+│       │   └── main
+│       ├── remotes/
+│       │   └── origin/
+│       │       ├── HEAD
+│       │       └── main
+│       └── tags/
+├── .github/
+│   └── workflows/
+│       └── deploy-vercel.yml
+├── .gitignore
+├── .npmrc
+├── .vercel/
+│   ├── README.txt
+│   └── project.json
+├── DEPLOYMENT_SETUP.md  # QuantumHealth Deployment Setup
+├── Favicon.png
+├── Healthy_ShareImage.png
+├── LOGIN_IMPLEMENTATION_CHECKLIST.md  # QUANTUM HEALTH - Login Implementation Checklist
+├── LOGIN_IMPLEMENTATION_PLAN.md  # QUANTUM HEALTH - Login Implementation Plan
+├── MULTITENANT_SETUP_COMPLETE.md  # 🎉 Multi-Tenant Database Setup Complete!
+├── PHASE_1_COMPLETE.md  # Phase 1: Authentication Infrastructure - COMPLETE ✅
+├── PHASE_2_COMPLETE.md  # Phase 2: User Management - COMPLETE ✅
+├── PHASE_3_COMPLETE.md  # Phase 3: Login Implementation - COMPLETE ✅
+├── PROJECT_DEPLOYMENT_MILESTONES.md  # 🚀 Project Deployment Milestone Process
+├── QUANTUMHEALTH_TABLE_MIGRATION_COMPLETE.md  # QUANTUM HEALTH - Table Migration Complete ✅
+├── QUANTUMHEALTH_TABLE_NAMES.md  # QuantumHealth Database Table Names
+├── QUANTUM_MULTITENANT_PROTOCOL.md  # Quantum Climb Multi-Tenant SaaS Protocol
+├── QUANTUM_MULTITENANT_SECURITY_ANALYSIS.md  # Quantum Database Multi-Tenant Security Analysis
+├── README.md  # QUANTUM HEALTH - Advanced Healthcare Management Platform
+├── SECURITY_SETUP.md  # Security Setup Guide
+├── SEO_OPTIMIZATION.md  # QUANTUM HEALTH - SEO Optimization Guide
+├── TESTING_SETUP.md  # QUANTUM HEALTH Testing Setup
+├── components.json
+├── dist/
+│   ├── assets/
+│   │   ├── 0004c791-5028-4d5a-ac24-f6de320fc70b.png
+│   │   ├── Favicon.png
+│   │   ├── Healthy_ShareImage.png
+│   │   ├── cb1258b0-cbdd-42f0-aa60-f8b0d52a3c5d.png
+│   │   ├── index-CfzQ1hz_.js
+│   │   ├── index-DbFzY37x.css
+│   │   └── logo1.zip
+│   ├── favicon.ico
+│   ├── index.html
+│   ├── placeholder.svg
+│   └── robots.txt
+├── env.local.example
+├── eslint.config.js
+├── index.html
+├── mcp.config.alternatives.json
+├── mcp.config.secure.json
+├── node_modules/
+│   ├── .bin/
+│   ├── .package-lock.json/
+│   ├── .vite/
+│   ├── @adobe/
+│   ├── @alloc/
+│   ├── @asamuzakjp/
+│   ├── @babel/
+│   ├── @bundled-es-modules/
+│   ├── @csstools/
+│   ├── @esbuild/
+│   ├── @eslint/
+│   ├── @eslint-community/
+│   ├── @floating-ui/
+│   ├── @hookform/
+│   ├── @humanfs/
+│   ├── @humanwhocodes/
+│   ├── @inquirer/
+│   ├── @isaacs/
+│   ├── @jridgewell/
+│   ├── @mswjs/
+│   ├── @nodelib/
+│   ├── @open-draft/
+│   ├── @pkgjs/
+│   ├── @polka/
+│   ├── @radix-ui/
+│   ├── @remix-run/
+│   ├── @rollup/
+│   ├── @supabase/
+│   ├── @swc/
+│   ├── @tailwindcss/
+│   ├── @tanstack/
+│   ├── @testing-library/
+│   ├── @types/
+│   ├── @typescript-eslint/
+│   ├── @vitejs/
+│   ├── @vitest/
+│   ├── acorn/
+│   ├── acorn-jsx/
+│   ├── agent-base/
+│   ├── ajv/
+│   ├── ansi-escapes/
+│   ├── ansi-regex/
+│   ├── ansi-styles/
+│   ├── any-promise/
+│   ├── anymatch/
+│   ├── arg/
+│   ├── argparse/
+│   ├── aria-hidden/
+│   ├── aria-query/
+│   ├── assertion-error/
+│   ├── autoprefixer/
+│   ├── balanced-match/
+│   ├── binary-extensions/
+│   ├── brace-expansion/
+│   ├── braces/
+│   ├── browserslist/
+│   ├── cac/
+│   ├── callsites/
+│   ├── camelcase-css/
+│   ├── caniuse-lite/
+│   ├── chai/
+│   ├── chalk/
+│   ├── check-error/
+│   ├── chokidar/
+│   ├── class-variance-authority/
+│   ├── cli-width/
+│   ├── cliui/
+│   ├── clsx/
+│   ├── cmdk/
+│   ├── color-convert/
+│   ├── color-name/
+│   ├── commander/
+│   ├── concat-map/
+│   ├── cookie/
+│   ├── cross-spawn/
+│   ├── css.escape/
+│   ├── cssesc/
+│   ├── cssstyle/
+│   ├── csstype/
+│   ├── d3-array/
+│   ├── d3-color/
+│   ├── d3-ease/
+│   ├── d3-format/
+│   ├── d3-interpolate/
+│   ├── d3-path/
+│   ├── d3-scale/
+│   ├── d3-shape/
+│   ├── d3-time/
+│   ├── d3-time-format/
+│   ├── d3-timer/
+│   ├── data-urls/
+│   ├── date-fns/
+│   ├── debug/
+│   ├── decimal.js/
+│   ├── decimal.js-light/
+│   ├── deep-eql/
+│   ├── deep-is/
+│   ├── dequal/
+│   ├── detect-node-es/
+│   ├── didyoumean/
+│   ├── dlv/
+│   ├── dom-accessibility-api/
+│   ├── dom-helpers/
+│   ├── eastasianwidth/
+│   ├── electron-to-chromium/
+│   ├── embla-carousel/
+│   ├── embla-carousel-react/
+│   ├── embla-carousel-reactive-utils/
+│   ├── emoji-regex/
+│   ├── entities/
+│   ├── es-module-lexer/
+│   ├── escalade/
+│   ├── escape-string-regexp/
+│   ├── eslint/
+│   ├── eslint-plugin-react-hooks/
+│   ├── eslint-plugin-react-refresh/
+│   ├── eslint-scope/
+│   ├── eslint-visitor-keys/
+│   ├── espree/
+│   ├── esquery/
+│   ├── esrecurse/
+│   ├── estraverse/
+│   ├── estree-walker/
+│   ├── esutils/
+│   ├── eventemitter3/
+│   ├── expect-type/
+│   ├── fast-deep-equal/
+│   ├── fast-equals/
+│   ├── fast-glob/
+│   ├── fast-json-stable-stringify/
+│   ├── fast-levenshtein/
+│   ├── fastq/
+│   ├── fflate/
+│   ├── file-entry-cache/
+│   ├── fill-range/
+│   ├── find-up/
+│   ├── flat-cache/
+│   ├── flatted/
+│   ├── foreground-child/
+│   ├── fraction.js/
+│   ├── function-bind/
+│   ├── get-caller-file/
+│   ├── get-nonce/
+│   ├── glob/
+│   ├── glob-parent/
+│   ├── globals/
+│   ├── graphemer/
+│   ├── graphql/
+│   ├── has-flag/
+│   ├── hasown/
+│   ├── headers-polyfill/
+│   ├── html-encoding-sniffer/
+│   ├── http-proxy-agent/
+│   ├── https-proxy-agent/
+│   ├── iconv-lite/
+│   ├── ignore/
+│   ├── import-fresh/
+│   ├── imurmurhash/
+│   ├── indent-string/
+│   ├── input-otp/
+│   ├── internmap/
+│   ├── is-binary-path/
+│   ├── is-core-module/
+│   ├── is-extglob/
+│   ├── is-fullwidth-code-point/
+│   ├── is-glob/
+│   ├── is-node-process/
+│   ├── is-number/
+│   ├── is-potential-custom-element-name/
+│   ├── isexe/
+│   ├── jackspeak/
+│   ├── jiti/
+│   ├── js-tokens/
+│   ├── js-yaml/
+│   ├── jsdom/
+│   ├── json-buffer/
+│   ├── json-schema-traverse/
+│   ├── json-stable-stringify-without-jsonify/
+│   ├── keyv/
+│   ├── levn/
+│   ├── lilconfig/
+│   ├── lines-and-columns/
+│   ├── locate-path/
+│   ├── lodash/
+│   ├── lodash.castarray/
+│   ├── lodash.isplainobject/
+│   ├── lodash.merge/
+│   ├── loose-envify/
+│   ├── loupe/
+│   ├── lru-cache/
+│   ├── lucide-react/
+│   ├── lz-string/
+│   ├── magic-string/
+│   ├── merge2/
+│   ├── micromatch/
+│   ├── min-indent/
+│   ├── minimatch/
+│   ├── minipass/
+│   ├── mrmime/
+│   ├── ms/
+│   ├── msw/
+│   ├── mute-stream/
+│   ├── mz/
+│   ├── nanoid/
+│   ├── natural-compare/
+│   ├── next-themes/
+│   ├── node-releases/
+│   ├── normalize-path/
+│   ├── normalize-range/
+│   ├── nwsapi/
+│   ├── object-assign/
+│   ├── object-hash/
+│   ├── optionator/
+│   ├── outvariant/
+│   ├── p-limit/
+│   ├── p-locate/
+│   ├── package-json-from-dist/
+│   ├── parent-module/
+│   ├── parse5/
+│   ├── path-exists/
+│   ├── path-key/
+│   ├── path-parse/
+│   ├── path-scurry/
+│   ├── path-to-regexp/
+│   ├── pathe/
+│   ├── pathval/
+│   ├── picocolors/
+│   ├── picomatch/
+│   ├── pify/
+│   ├── pirates/
+│   ├── postcss/
+│   ├── postcss-import/
+│   ├── postcss-js/
+│   ├── postcss-load-config/
+│   ├── postcss-nested/
+│   ├── postcss-selector-parser/
+│   ├── postcss-value-parser/
+│   ├── prelude-ls/
+│   ├── pretty-format/
+│   ├── prop-types/
+│   ├── psl/
+│   ├── punycode/
+│   ├── querystringify/
+│   ├── queue-microtask/
+│   ├── react/
+│   ├── react-day-picker/
+│   ├── react-dom/
+│   ├── react-hook-form/
+│   ├── react-is/
+│   ├── react-remove-scroll/
+│   ├── react-remove-scroll-bar/
+│   ├── react-resizable-panels/
+│   ├── react-router/
+│   ├── react-router-dom/
+│   ├── react-smooth/
+│   ├── react-style-singleton/
+│   ├── react-transition-group/
+│   ├── read-cache/
+│   ├── readdirp/
+│   ├── recharts/
+│   ├── recharts-scale/
+│   ├── redent/
+│   ├── regenerator-runtime/
+│   ├── require-directory/
+│   ├── requires-port/
+│   ├── resolve/
+│   ├── resolve-from/
+│   ├── reusify/
+│   ├── rollup/
+│   ├── rrweb-cssom/
+│   ├── run-parallel/
+│   ├── safer-buffer/
+│   ├── saxes/
+│   ├── scheduler/
+│   ├── semver/
+│   ├── shebang-command/
+│   ├── shebang-regex/
+│   ├── siginfo/
+│   ├── signal-exit/
+│   ├── sirv/
+│   ├── sonner/
+│   ├── source-map-js/
+│   ├── stackback/
+│   ├── statuses/
+│   ├── std-env/
+│   ├── strict-event-emitter/
+│   ├── string-width/
+│   ├── string-width-cjs/
+│   ├── strip-ansi/
+│   ├── strip-ansi-cjs/
+│   ├── strip-indent/
+│   ├── strip-json-comments/
+│   ├── strip-literal/
+│   ├── sucrase/
+│   ├── supports-color/
+│   ├── supports-preserve-symlinks-flag/
+│   ├── symbol-tree/
+│   ├── tailwind-merge/
+│   ├── tailwindcss/
+│   ├── tailwindcss-animate/
+│   ├── thenify/
+│   ├── thenify-all/
+│   ├── tiny-invariant/
+│   ├── tinybench/
+│   ├── tinyexec/
+│   ├── tinyglobby/
+│   ├── tinypool/
+│   ├── tinyrainbow/
+│   ├── tinyspy/
+│   ├── tldts/
+│   ├── tldts-core/
+│   ├── to-regex-range/
+│   ├── totalist/
+│   ├── tough-cookie/
+│   ├── tr46/
+│   ├── ts-api-utils/
+│   ├── ts-interface-checker/
+│   ├── tslib/
+│   ├── type-check/
+│   ├── type-fest/
+│   ├── typescript/
+│   ├── typescript-eslint/
+│   ├── undici-types/
+│   ├── universalify/
+│   ├── update-browserslist-db/
+│   ├── uri-js/
+│   ├── url-parse/
+│   ├── use-callback-ref/
+│   ├── use-sidecar/
+│   ├── util-deprecate/
+│   ├── vaul/
+│   ├── victory-vendor/
+│   ├── vite/
+│   ├── vite-node/
+│   ├── vitest/
+│   ├── w3c-xmlserializer/
+│   ├── webidl-conversions/
+│   ├── whatwg-encoding/
+│   ├── whatwg-mimetype/
+│   ├── whatwg-url/
+│   ├── which/
+│   ├── why-is-node-running/
+│   ├── word-wrap/
+│   ├── wrap-ansi/
+│   ├── wrap-ansi-cjs/
+│   ├── ws/
+│   ├── xml-name-validator/
+│   ├── xmlchars/
+│   ├── y18n/
+│   ├── yaml/
+│   ├── yargs/
+│   ├── yargs-parser/
+│   ├── yocto-queue/
+│   ├── yoctocolors-cjs/
+│   └── zod/
+├── package.json
+├── postcss.config.js
+├── project_variables.json
+├── public/
+│   ├── assets/
+│   │   ├── 0004c791-5028-4d5a-ac24-f6de320fc70b.png
+│   │   ├── Favicon.png
+│   │   ├── Healthy_ShareImage.png
+│   │   ├── cb1258b0-cbdd-42f0-aa60-f8b0d52a3c5d.png
+│   │   └── logo1.zip
+│   ├── favicon.ico
+│   ├── manifest.json
+│   ├── placeholder.svg
+│   ├── robots.txt
+│   └── sitemap.xml
+├── scan_structure.py
+├── src/
+│   ├── App.css
+│   ├── App.tsx
+│   ├── components/
+│   │   ├── Layout.tsx
+│   │   ├── Navbar.tsx
+│   │   ├── SEO.tsx
+│   │   ├── Sidebar.tsx
+│   │   ├── __tests__/
+│   │   │   ├── Button.test.tsx
+│   │   │   ├── Layout.test.tsx
+│   │   │   ├── Navbar.test.tsx
+│   │   │   └── SEO.test.tsx
+│   │   ├── auth/
+│   │   │   ├── DoctorRegistration.tsx
+│   │   │   ├── PasswordReset.tsx
+│   │   │   ├── PatientRegistration.tsx
+│   │   │   ├── ProfileUpdate.tsx
+│   │   │   └── RegistrationSelector.tsx
+│   │   ├── messages/
+│   │   │   ├── MessageDetail.tsx
+│   │   │   └── MessageList.tsx
+│   │   ├── reports/
+│   │   │   ├── NoReportSelected.tsx
+│   │   │   ├── ReportDetail.tsx
+│   │   │   ├── ReportFilter.tsx
+│   │   │   ├── ReportList.tsx
+│   │   │   └── ReportTabs.tsx
+│   │   └── ui/
+│   │       ├── accordion.tsx
+│   │       ├── alert-dialog.tsx
+│   │       ├── alert.tsx
+│   │       ├── aspect-ratio.tsx
+│   │       ├── avatar.tsx
+│   │       ├── badge.tsx
+│   │       ├── breadcrumb.tsx
+│   │       ├── button.tsx
+│   │       ├── calendar.tsx
+│   │       ├── card.tsx
+│   │       ├── carousel.tsx
+│   │       ├── chart.tsx
+│   │       ├── checkbox.tsx
+│   │       ├── collapsible.tsx
+│   │       ├── command.tsx
+│   │       ├── context-menu.tsx
+│   │       ├── dialog.tsx
+│   │       ├── drawer.tsx
+│   │       ├── dropdown-menu.tsx
+│   │       ├── form.tsx
+│   │       ├── hover-card.tsx
+│   │       ├── input-otp.tsx
+│   │       ├── input.tsx
+│   │       ├── label.tsx
+│   │       ├── menubar.tsx
+│   │       ├── navigation-menu.tsx
+│   │       ├── pagination.tsx
+│   │       ├── popover.tsx
+│   │       ├── progress.tsx
+│   │       ├── radio-group.tsx
+│   │       ├── resizable.tsx
+│   │       ├── scroll-area.tsx
+│   │       ├── select.tsx
+│   │       ├── separator.tsx
+│   │       ├── sheet.tsx
+│   │       ├── sidebar.tsx
+│   │       ├── skeleton.tsx
+│   │       ├── slider.tsx
+│   │       ├── sonner.tsx
+│   │       ├── switch.tsx
+│   │       ├── table.tsx
+│   │       ├── tabs.tsx
+│   │       ├── textarea.tsx
+│   │       ├── toast.tsx
+│   │       ├── toaster.tsx
+│   │       ├── toggle-group.tsx
+│   │       ├── toggle.tsx
+│   │       ├── tooltip.tsx
+│   │       └── use-toast.ts
+│   ├── hooks/
+│   │   ├── use-mobile.tsx
+│   │   └── use-toast.ts
+│   ├── index.css
+│   ├── lib/
+│   │   └── utils.ts
+│   ├── main.tsx
+│   ├── pages/
+│   │   ├── AppointmentBooking.tsx
+│   │   ├── DoctorDashboard.tsx
+│   │   ├── DoctorMessages.tsx
+│   │   ├── DoctorPatients.tsx
+│   │   ├── DoctorProfile.tsx
+│   │   ├── DoctorReportCreate.tsx
+│   │   ├── DoctorReports.tsx
+│   │   ├── DoctorSchedule.tsx
+│   │   ├── DoctorScheduleManage.tsx
+│   │   ├── DoctorSettings.tsx
+│   │   ├── Index.tsx
+│   │   ├── Login.tsx
+│   │   ├── NotFound.tsx
+│   │   ├── PasswordReset.tsx
+│   │   ├── PatientAppointments.tsx
+│   │   ├── PatientDashboard.tsx
+│   │   ├── PatientMessages.tsx
+│   │   ├── PatientProfile.tsx
+│   │   ├── PatientReportUpload.tsx
+│   │   ├── PatientReports.tsx
+│   │   ├── PatientSettings.tsx
+│   │   ├── Register.tsx
+│   │   └── __tests__/
+│   │       └── Login.test.tsx
+│   ├── services/
+│   │   ├── __tests__/
+│   │   │   ├── authService.test.ts
+│   │   │   └── supabaseService.test.ts
+│   │   ├── authService.ts
+│   │   └── supabaseService.ts
+│   ├── test/
+│   │   ├── mocks/
+│   │   │   ├── handlers.ts
+│   │   │   └── server.ts
+│   │   ├── setup.ts
+│   │   └── utils.tsx
+│   └── vite-env.d.ts  # <reference types="vite/client" />
+├── tailwind.config.ts
+├── tsconfig.app.json
+├── tsconfig.json
+├── tsconfig.node.json
+├── vite.config.ts
+└── vitest.config.ts  # <reference types="vitest" />

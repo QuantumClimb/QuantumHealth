@@ -5,6 +5,8 @@ import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
+import ProtectedRoute from '@/components/auth/ProtectedRoute';
+import PendingApproval from './pages/PendingApproval';
 import { initializeApp, getCurrentTenant, type Tenant } from '@/services/supabaseService';
 
 import Index from "./pages/Index";
@@ -27,6 +29,10 @@ import DoctorMessages from "./pages/DoctorMessages";
 import DoctorSchedule from "./pages/DoctorSchedule";
 import DoctorScheduleManage from "./pages/DoctorScheduleManage";
 import DoctorPatients from "./pages/DoctorPatients";
+import DoctorProfileSetup from "./pages/DoctorProfileSetup";
+import GetStarted from "./pages/GetStarted";
+import AddDoctor from "./pages/AddDoctor";
+import DoctorsList from "./pages/DoctorsList";
 import AppointmentBooking from "./pages/AppointmentBooking";
 import NotFound from "./pages/NotFound";
 
@@ -62,6 +68,22 @@ const App = () => {
           plan: tenant.plan,
           features: tenant.settings.features
         });
+        // Apply minimal branding (title/colors)
+        try {
+          if (tenant?.settings?.theme) {
+            const theme: { primary_color?: string; secondary_color?: string; logo_url?: string; site_title?: string } = tenant.settings.theme as unknown as { primary_color?: string; secondary_color?: string; logo_url?: string; site_title?: string };
+            const primary = theme.primary_color || '#14b8a6';
+            const secondary = theme.secondary_color || '#22c55e';
+            document.documentElement.style.setProperty('--brand-primary', primary);
+            document.documentElement.style.setProperty('--brand-accent', secondary);
+          }
+          const siteTitle = (tenant.settings as unknown as { theme?: { site_title?: string } })?.theme?.site_title || tenant.name || 'QuantumHealth';
+          if (siteTitle) {
+            document.title = siteTitle;
+          }
+        } catch (e) {
+          console.warn('Branding apply failed', e);
+        }
       } catch (error) {
         console.error('❌ Failed to initialize QuantumHealth:', error);
         setInitError(error instanceof Error ? error.message : 'Unknown error');
@@ -118,10 +140,13 @@ const App = () => {
             {/* Tenant Context Provider */}
             <div data-tenant={currentTenant?.slug} data-tenant-plan={currentTenant?.plan}>
               <Routes>
-                <Route path="/" element={<Index />} />
+                <Route path="/" element={<GetStarted />} />
                 <Route path="/login" element={<Login />} />
                 <Route path="/register" element={<Register />} />
                 <Route path="/password-reset" element={<PasswordReset />} />
+                <Route path="/pending-approval" element={<PendingApproval />} />
+                <Route path="/add-doctor" element={<AddDoctor />} />
+                <Route path="/doctors" element={<DoctorsList />} />
                 
                 {/* Patient Routes */}
                 <Route path="/patient/dashboard" element={<PatientDashboard />} />
@@ -135,6 +160,7 @@ const App = () => {
                 
                 {/* Doctor Routes */}
                 <Route path="/doctor/dashboard" element={<DoctorDashboard />} />
+                <Route path="/doctor/profile-setup" element={<DoctorProfileSetup />} />
                 <Route path="/doctor/profile" element={<DoctorProfile />} />
                 <Route path="/doctor/reports" element={<DoctorReports />} />
                 <Route path="/doctor/reports/upload" element={<PatientReportUpload />} />

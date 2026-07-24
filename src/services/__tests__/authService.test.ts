@@ -41,9 +41,14 @@ describe('AuthService', () => {
         email: 'existing@example.com',
         password: 'password123',
         role: 'patient' as const,
+        profile: {
+          first_name: 'Test',
+          last_name: 'Patient',
+          phone: '1234567890'
+        }
       }
 
-      const result = await authService.registerUser(credentials, {})
+      const result = await authService.registerUser(credentials)
 
       expect(result).toBeNull()
     })
