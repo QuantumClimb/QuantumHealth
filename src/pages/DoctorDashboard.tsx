@@ -1,97 +1,96 @@
-import React, { useEffect, useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+
+import { useEffect, useState } from 'react';
+import { Link } from 'react-router-dom';
 import { Calendar, Clock, Users, FileText, ChevronRight, MessageCircle, Phone, Activity } from 'lucide-react';
 import Layout from '@/components/Layout';
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
-import { useAuth } from '@/contexts/AuthContext';
 import { motion } from 'framer-motion';
+import { toast } from 'sonner';
+import {
+  multiTenantService,
+  type Appointment,
+  type MedicalReport,
+  type PatientProfile
+} from '@/services/supabaseService';
 
-// Enhanced sample data - in a real app, this would come from API
-const todayAppointments = [
-  { 
-    id: 1, 
-    patient: 'Sarah Johnson', 
-    time: '09:00 AM', 
-    type: 'Dentistry', 
-    status: 'Confirmed',
-    phone: '+14155552672',
-    notes: 'Regular checkup and cleaning',
-    history: 'Last visit: Jan 15, 2025 - Filling on lower right molar'
-  },
-  { 
-    id: 2, 
-    patient: 'Michael Brown', 
-    time: '10:30 AM', 
-    type: 'Dentistry', 
-    status: 'In progress',
-    phone: '+14155552673',
-    notes: 'Follow-up on root canal',
-    history: 'Last visit: Mar 22, 2025 - Root canal initial treatment'
-  },
-  { 
-    id: 3, 
-    patient: 'Emily Davis', 
-    time: '02:00 PM', 
-    type: 'Dentistry', 
-    status: 'Upcoming',
-    phone: '+14155552674',
-    notes: 'Wisdom tooth consultation',
-    history: 'New patient'
-  },
-];
+interface DoctorProfileLike {
+  first_name: string;
+  last_name: string;
+}
 
-const pendingReports = [
-  { 
-    id: 1, 
-    patient: 'Sarah Johnson', 
-    type: 'X-Ray Results', 
-    date: 'April 7, 2025',
-    priority: 'High',
-    appointmentDate: 'April 3, 2025'
-  },
-  { 
-    id: 2, 
-    patient: 'Robert Wilson', 
-    type: 'Blood Test', 
-    date: 'April 6, 2025',
-    priority: 'Medium',
-    appointmentDate: 'April 1, 2025'
-  },
-];
-
-const patientStats = {
-  total: 128,
-  new: 3,
-  upcoming: 5
-};
-
-const createWhatsAppUrl = (phone: string, appointment: any) => {
+const createWhatsAppUrl = (phone: string, patientName: string, doctorLastName: string, appointmentType: string, time: string) => {
   const message = encodeURIComponent(
-    `Hello ${appointment.patient}, this is Dr. Rodriguez from Healthy Clinic regarding your ${appointment.type} appointment scheduled for today at ${appointment.time}. Please confirm if you'll be attending. Thank you!`
+    `Hello ${patientName}, this is Dr. ${doctorLastName} regarding your ${appointmentType} appointment scheduled for today at ${time}. Please confirm if you'll be attending. Thank you!`
   );
   return `https://wa.me/${phone}?text=${message}`;
 };
 
+const formatAppointmentTime = (time: string) => {
+  const [value, meridiem] = time.split(' ');
+  return { value: value || time, meridiem: meridiem || '' };
+};
+
+const formatLabel = (value: string) =>
+  value.replace(/_/g, ' ').replace(/\b\w/g, (c) => c.toUpperCase());
+
+const statusBadgeClass = (status: Appointment['status']) => {
+  switch (status) {
+    case 'confirmed':
+      return 'bg-blue-50 text-blue-700 border-blue-200';
+    case 'completed':
+      return 'bg-healthy-50 text-healthy-700 border-healthy-200';
+    case 'cancelled':
+    case 'no_show':
+      return 'bg-red-50 text-red-700 border-red-200';
+    default:
+      return 'bg-slate-100 text-slate-700 border-slate-200';
+  }
+};
+
 const DoctorDashboard = () => {
-  const navigate = useNavigate();
-  const { user } = useAuth();
-  const [doctorProfile, setDoctorProfile] = useState<any>(null);
+  const [doctorProfile, setDoctorProfile] = useState<DoctorProfileLike | null>(null);
+  const [appointments, setAppointments] = useState<Appointment[]>([]);
+  const [reports, setReports] = useState<MedicalReport[]>([]);
+  const [patients, setPatients] = useState<PatientProfile[]>([]);
+  const [dataLoading, setDataLoading] = useState(true);
 
   useEffect(() => {
     // Check if doctor profile exists
     const profile = localStorage.getItem('doctorProfile');
     if (!profile) {
       // Create a mock profile if bypassing real setup in demo
-      const mockProfile = { first_name: 'Jane', last_name: 'Doe' };
-      setDoctorProfile(mockProfile);
+      setDoctorProfile({ first_name: 'Jane', last_name: 'Doe' });
       return;
     }
     setDoctorProfile(JSON.parse(profile));
-  }, [navigate]);
+  }, []);
 
-  if (!doctorProfile) {
+  useEffect(() => {
+    const loadDashboardData = async () => {
+      try {
+        setDataLoading(true);
+        const [appointmentsData, reportsData, patientsData] = await Promise.all([
+          multiTenantService.getAppointments(),
+          multiTenantService.getMedicalReports(),
+          multiTenantService.getPatients()
+        ]);
+        setAppointments(appointmentsData);
+        setReports(reportsData);
+        setPatients(patientsData);
+      } catch (error) {
+        console.error('Error loading dashboard data:', error);
+        toast.error('Failed to load dashboard data. Please refresh the page.');
+      } finally {
+        setDataLoading(false);
+      }
+    };
+
+    loadDashboardData();
+  }, []);
+
+  if (!doctorProfile || dataLoading) {
     return (
       <Layout userRole="doctor">
          <div className="flex items-center justify-center min-h-[60vh]">
@@ -104,11 +103,23 @@ const DoctorDashboard = () => {
     );
   }
 
+  const patientsById = new Map(patients.map((p) => [p.id, p]));
+
+  const todayAppointments = appointments.filter(
+    (a) => new Date(a.appointment_date).toDateString() === new Date().toDateString()
+  );
+
+  const pendingReports = reports.filter((r) => r.status === 'pending');
+
+  const oneWeekAgo = new Date();
+  oneWeekAgo.setDate(oneWeekAgo.getDate() - 7);
+  const newPatientsThisWeek = patients.filter((p) => new Date(p.created_at) >= oneWeekAgo).length;
+
   const containerVariants = {
     hidden: { opacity: 0 },
     visible: { opacity: 1, transition: { staggerChildren: 0.1 } }
   };
-  
+
   const itemVariants = {
     hidden: { opacity: 0, y: 20 },
     visible: { opacity: 1, y: 0 }
@@ -141,7 +152,7 @@ const DoctorDashboard = () => {
               </CardContent>
             </Card>
           </motion.div>
-          
+
           <motion.div variants={itemVariants}>
             <Card className="glass-card border-white/60 shadow-sm relative overflow-hidden group">
                <div className="absolute top-0 right-0 w-24 h-24 bg-amber-500/10 rounded-bl-full -z-10 group-hover:scale-110 transition-transform"></div>
@@ -159,7 +170,7 @@ const DoctorDashboard = () => {
               </CardContent>
             </Card>
           </motion.div>
-          
+
           <motion.div variants={itemVariants}>
             <Card className="glass-card border-white/60 shadow-sm relative overflow-hidden group">
                <div className="absolute top-0 right-0 w-24 h-24 bg-healthy-500/10 rounded-bl-full -z-10 group-hover:scale-110 transition-transform"></div>
@@ -171,10 +182,12 @@ const DoctorDashboard = () => {
               </CardHeader>
               <CardContent>
                 <div className="flex items-baseline gap-2">
-                  <span className="text-4xl font-black text-slate-900">{patientStats.total}</span>
-                  <Badge variant="secondary" className="bg-green-50 text-green-700 border-green-100 font-bold px-2 py-0.5 relative -top-2">
-                    +{patientStats.new} this week
-                  </Badge>
+                  <span className="text-4xl font-black text-slate-900">{patients.length}</span>
+                  {newPatientsThisWeek > 0 && (
+                    <Badge variant="secondary" className="bg-green-50 text-green-700 border-green-100 font-bold px-2 py-0.5 relative -top-2">
+                      +{newPatientsThisWeek} this week
+                    </Badge>
+                  )}
                 </div>
               </CardContent>
             </Card>
@@ -193,65 +206,67 @@ const DoctorDashboard = () => {
                   Today's Schedule
                 </CardTitle>
                 <Badge variant="outline" className="bg-slate-50 text-slate-600 font-semibold border-slate-200">
-                  April 7, 2025
+                  {new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })}
                 </Badge>
               </CardHeader>
               <CardContent className="p-0">
                 {todayAppointments.length > 0 ? (
                   <div className="divide-y divide-slate-100">
-                    {todayAppointments.map(appointment => (
-                      <div key={appointment.id} className="p-6 hover:bg-white/60 transition-colors group">
-                        <div className="flex flex-col sm:flex-row gap-4 justify-between">
-                           <div className="flex gap-4">
-                              <div className="flex flex-col items-center justify-center bg-slate-50 border border-slate-100 rounded-xl w-20 h-20 shrink-0 shadow-sm">
-                                <span className="text-xl font-bold text-slate-800 leading-none">{appointment.time.split(' ')[0]}</span>
-                                <span className="text-xs font-semibold text-slate-500 uppercase mt-1">{appointment.time.split(' ')[1]}</span>
-                              </div>
-                              <div>
-                                <h4 className="font-bold text-slate-900 text-lg flex items-center gap-2">
-                                   {appointment.patient}
-                                   <Badge variant="secondary" className={`text-xs ${
-                                     appointment.status === 'Confirmed' ? 'bg-blue-50 text-blue-700 border-blue-200' : 
-                                     appointment.status === 'In progress' ? 'bg-healthy-50 text-healthy-700 border-healthy-200' : 
-                                     'bg-slate-100 text-slate-700 border-slate-200'
-                                   }`}>
-                                     {appointment.status}
-                                   </Badge>
-                                </h4>
-                                <p className="text-sm font-medium text-slate-500 mt-1 flex items-center gap-1">
-                                   <Activity className="h-3 w-3" /> {appointment.type}
-                                </p>
-                                <div className="mt-3 text-sm text-slate-600 space-y-1">
-                                  <p className="flex gap-2">
-                                     <span className="font-semibold text-slate-700">Note:</span> {appointment.notes}
-                                  </p>
-                                  <p className="flex gap-2">
-                                     <span className="font-semibold text-slate-700">History:</span> {appointment.history}
-                                  </p>
+                    {todayAppointments.map(appointment => {
+                      const patient = patientsById.get(appointment.patient_id);
+                      const patientName = patient ? `${patient.first_name} ${patient.last_name}` : 'Unknown Patient';
+                      const { value: timeValue, meridiem } = formatAppointmentTime(appointment.appointment_time);
+                      return (
+                        <div key={appointment.id} className="p-6 hover:bg-white/60 transition-colors group">
+                          <div className="flex flex-col sm:flex-row gap-4 justify-between">
+                             <div className="flex gap-4">
+                                <div className="flex flex-col items-center justify-center bg-slate-50 border border-slate-100 rounded-xl w-20 h-20 shrink-0 shadow-sm">
+                                  <span className="text-xl font-bold text-slate-800 leading-none">{timeValue}</span>
+                                  {meridiem && <span className="text-xs font-semibold text-slate-500 uppercase mt-1">{meridiem}</span>}
                                 </div>
-                              </div>
-                           </div>
-                           <div className="flex sm:flex-col gap-2 shrink-0 pt-2 sm:pt-0">
-                              <a 
-                                href={createWhatsAppUrl(appointment.phone, appointment)}
-                                target="_blank" 
-                                rel="noopener noreferrer"
-                                className="flex-1 sm:flex-none flex items-center justify-center gap-2 text-sm bg-[#25D366] hover:bg-[#20bd5a] text-white py-2 px-4 rounded-xl transition-all font-medium shadow-sm"
-                              >
-                                <MessageCircle className="h-4 w-4" />
-                                WhatsApp
-                              </a>
-                              <a 
-                                href={`tel:${appointment.phone}`}
-                                className="flex-1 sm:flex-none flex items-center justify-center gap-2 text-sm bg-white hover:bg-slate-50 border border-slate-200 text-slate-700 py-2 px-4 rounded-xl transition-all font-medium shadow-sm"
-                              >
-                                <Phone className="h-4 w-4" />
-                                Call Patient
-                              </a>
-                           </div>
+                                <div>
+                                  <h4 className="font-bold text-slate-900 text-lg flex items-center gap-2">
+                                     {patientName}
+                                     <Badge variant="secondary" className={`text-xs ${statusBadgeClass(appointment.status)}`}>
+                                       {formatLabel(appointment.status)}
+                                     </Badge>
+                                  </h4>
+                                  <p className="text-sm font-medium text-slate-500 mt-1 flex items-center gap-1">
+                                     <Activity className="h-3 w-3" /> {formatLabel(appointment.appointment_type || 'consultation')}
+                                  </p>
+                                  {appointment.notes && (
+                                    <div className="mt-3 text-sm text-slate-600 space-y-1">
+                                      <p className="flex gap-2">
+                                         <span className="font-semibold text-slate-700">Note:</span> {appointment.notes}
+                                      </p>
+                                    </div>
+                                  )}
+                                </div>
+                             </div>
+                             {patient?.phone && (
+                               <div className="flex sm:flex-col gap-2 shrink-0 pt-2 sm:pt-0">
+                                  <a
+                                    href={createWhatsAppUrl(patient.phone, patientName, doctorProfile.last_name, appointment.appointment_type || 'consultation', appointment.appointment_time)}
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    className="flex-1 sm:flex-none flex items-center justify-center gap-2 text-sm bg-[#25D366] hover:bg-[#20bd5a] text-white py-2 px-4 rounded-xl transition-all font-medium shadow-sm"
+                                  >
+                                    <MessageCircle className="h-4 w-4" />
+                                    WhatsApp
+                                  </a>
+                                  <a
+                                    href={`tel:${patient.phone}`}
+                                    className="flex-1 sm:flex-none flex items-center justify-center gap-2 text-sm bg-white hover:bg-slate-50 border border-slate-200 text-slate-700 py-2 px-4 rounded-xl transition-all font-medium shadow-sm"
+                                  >
+                                    <Phone className="h-4 w-4" />
+                                    Call Patient
+                                  </a>
+                               </div>
+                             )}
+                          </div>
                         </div>
-                      </div>
-                    ))}
+                      );
+                    })}
                   </div>
                 ) : (
                   <div className="text-center py-12">
@@ -307,7 +322,7 @@ const DoctorDashboard = () => {
                 </div>
               </CardContent>
             </Card>
-            
+
             {/* Pending Reports Summary widget */}
             <Card className="glass-card shadow-sm border-white/60">
               <CardHeader className="pb-3 border-b border-slate-100">
@@ -319,21 +334,31 @@ const DoctorDashboard = () => {
                 </CardTitle>
               </CardHeader>
               <CardContent className="pt-4 p-0">
-                 <div className="divide-y divide-slate-100">
-                   {pendingReports.slice(0, 3).map(report => (
-                     <div key={report.id} className="p-4 flex items-center justify-between hover:bg-slate-50 transition-colors">
-                        <div>
-                           <h4 className="font-semibold text-slate-900 text-sm">{report.patient}</h4>
-                           <p className="text-xs text-slate-500">{report.type}</p>
-                        </div>
-                        <Button variant="ghost" size="sm" className="h-8 w-8 p-0 rounded-full text-slate-400 hover:text-amber-600 hover:bg-amber-50" asChild>
-                          <Link to={`/doctor/reports/create/${report.id}`}>
-                            <ChevronRight className="h-4 w-4" />
-                          </Link>
-                        </Button>
-                     </div>
-                   ))}
-                 </div>
+                 {pendingReports.length > 0 ? (
+                   <div className="divide-y divide-slate-100">
+                     {pendingReports.slice(0, 3).map(report => {
+                       const patient = patientsById.get(report.patient_id);
+                       const patientName = patient ? `${patient.first_name} ${patient.last_name}` : 'Unknown Patient';
+                       return (
+                         <div key={report.id} className="p-4 flex items-center justify-between hover:bg-slate-50 transition-colors">
+                            <div>
+                               <h4 className="font-semibold text-slate-900 text-sm">{patientName}</h4>
+                               <p className="text-xs text-slate-500">{report.report_name}</p>
+                            </div>
+                            <Button variant="ghost" size="sm" className="h-8 w-8 p-0 rounded-full text-slate-400 hover:text-amber-600 hover:bg-amber-50" asChild>
+                              <Link to="/doctor/reports">
+                                <ChevronRight className="h-4 w-4" />
+                              </Link>
+                            </Button>
+                         </div>
+                       );
+                     })}
+                   </div>
+                 ) : (
+                   <div className="text-center py-8">
+                     <p className="text-slate-500 text-sm font-medium">No reports pending review</p>
+                   </div>
+                 )}
               </CardContent>
             </Card>
           </motion.div>

@@ -5,7 +5,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Badge } from '@/components/ui/badge';
 import { useToast } from '@/hooks/use-toast';
 import { Stethoscope, Plus, Users, ArrowLeft, Calendar, DollarSign, Phone, Mail } from 'lucide-react';
-import { supabase } from '@/services/supabaseService';
+import { supabase, multiTenantService } from '@/services/supabaseService';
 
 interface Doctor {
   id: string;
@@ -34,10 +34,15 @@ const DoctorsList: React.FC = () => {
 
   const loadDoctors = async () => {
     try {
+      const tenantId = multiTenantService.getCurrentTenantId();
+      if (!tenantId) {
+        throw new Error('No tenant context set - tenant initialization may not have completed yet.');
+      }
+
       const { data, error } = await supabase
         .from('quantumhealth_doctor_profiles')
         .select('*')
-        .eq('tenant_id', 'quantumhealth')
+        .eq('tenant_id', tenantId)
         .eq('is_active', true)
         .order('created_at', { ascending: false });
 
@@ -50,7 +55,7 @@ const DoctorsList: React.FC = () => {
       console.error('Error loading doctors:', error);
       toast({
         title: "Error",
-        description: "Failed to load doctors.",
+        description: error instanceof Error ? error.message : "Failed to load doctors.",
         variant: "destructive",
       });
     } finally {

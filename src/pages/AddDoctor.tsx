@@ -8,7 +8,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { useToast } from '@/hooks/use-toast';
 import { User, Stethoscope, Save, ArrowLeft } from 'lucide-react';
-import { supabase, multiTenantService } from '@/services/supabaseService';
+import { multiTenantService } from '@/services/supabaseService';
 
 interface Doctor {
   id: string;
@@ -64,7 +64,14 @@ const AddDoctor: React.FC = () => {
     setIsLoading(true);
 
     try {
-      // Insert doctor using the centralized multi-tenant service
+      // Insert doctor using the centralized multi-tenant service.
+      // qualifications is a comma-separated string in the UI but the DB
+      // column (and DoctorProfile.qualifications) is a string[]/JSONB array.
+      const qualificationsArray = doctor.qualifications
+        .split(',')
+        .map((q) => q.trim())
+        .filter(Boolean);
+
       const newDoctor = await multiTenantService.createDoctor({
         first_name: doctor.first_name,
         last_name: doctor.last_name,
@@ -73,16 +80,16 @@ const AddDoctor: React.FC = () => {
         specialization: doctor.specialization,
         license_number: doctor.license_number,
         experience_years: doctor.experience_years,
-        qualifications: doctor.qualifications,
+        qualifications: qualificationsArray,
         consultation_fee: doctor.consultation_fee,
         bio: doctor.bio,
         is_active: true
-      } as any); // cast to any temporarily to handle 'is_active' if it's missing from the type
+      });
 
       if (!newDoctor) {
         throw new Error("Failed to create doctor profile");
       }
-      
+
       toast({
         title: "Doctor Added!",
         description: `Dr. ${doctor.last_name} has been successfully added to the system.`,

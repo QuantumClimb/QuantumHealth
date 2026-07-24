@@ -71,6 +71,8 @@ export interface DoctorProfile {
   qualifications?: string[];
   consultation_fee?: number;
   availability?: Record<string, unknown>;
+  bio?: string;
+  is_active?: boolean;
   created_at: string;
   updated_at: string;
 }
@@ -222,47 +224,20 @@ class MultiTenantSupabaseService {
         .single();
 
       if (error) {
-        console.warn('Tenant lookup failed:', error);
-        
-        const mockTenant: Tenant = {
-          id: 'mock-tenant-id',
-          name: 'QuantumHealth',
-          slug: 'quantumhealth',
-          domain: 'quantumhealth.quantum-climb.com',
-          created_at: new Date().toISOString(),
-          updated_at: new Date().toISOString(),
-          is_active: true,
-          plan: 'enterprise',
-          settings: {
-            theme: {
-              primary_color: '#14b8a6',
-              secondary_color: '#22c55e',
-              logo_url: '/assets/QuantumHealth_Logo.png'
-            },
-            features: {
-              reports: true,
-              messaging: true,
-              appointments: true,
-              analytics: true,
-              integrations: true
-            },
-            limits: {
-              max_users: 1000,
-              max_storage_gb: 100,
-              max_api_calls_per_day: 100000
-            }
-          },
-          metadata: {
-            industry: 'healthcare',
-            country: 'US',
-            timezone: 'UTC',
-            language: 'en'
-          }
-        };
-
-        this.currentTenant = mockTenant;
-        this.currentTenantId = mockTenant.id;
-        return mockTenant;
+        // We are NOT in mock mode here (that branch already returned above),
+        // so we're talking to a real database. Falling back to a fake
+        // tenant id (a non-UUID string) would silently pass through to every
+        // subsequent insert/select as `tenant_id`, which either violates the
+        // uuid column type or the FK to quantumhealth_tenants - producing
+        // confusing downstream errors on unrelated screens. Surface the real
+        // cause instead (missing tenant row, RLS block, network issue, etc).
+        console.error(`Tenant lookup failed for slug "${tenantSlug}":`, {
+          message: error.message,
+          details: error.details,
+          hint: error.hint,
+          code: error.code
+        });
+        throw new Error(`Failed to resolve tenant "${tenantSlug}": ${error.message}`);
       }
 
       this.currentTenant = tenant;
@@ -270,7 +245,9 @@ class MultiTenantSupabaseService {
       return tenant;
     } catch (error) {
       console.error('Error setting tenant context:', error);
-      return null;
+      // Re-throw so callers (initializeApp -> App.tsx) see the real reason
+      // instead of a generic "failed to initialize" message.
+      throw error;
     }
   }
 
@@ -372,8 +349,13 @@ class MultiTenantSupabaseService {
       .single();
 
     if (error) {
-      console.error('Error creating patient:', error);
-      return null;
+      console.error('Error creating patient:', {
+        message: error.message,
+        details: error.details,
+        hint: error.hint,
+        code: error.code
+      });
+      throw new Error(error.message);
     }
 
     return data;
@@ -454,8 +436,13 @@ class MultiTenantSupabaseService {
       .single();
 
     if (error) {
-      console.error('Error creating doctor:', error);
-      return null;
+      console.error('Error creating doctor:', {
+        message: error.message,
+        details: error.details,
+        hint: error.hint,
+        code: error.code
+      });
+      throw new Error(error.message);
     }
 
     return data;
@@ -533,11 +520,11 @@ class MultiTenantSupabaseService {
   }
 
   // ===== APPOINTMENTS OPERATIONS =====
-  async getAppointments(): Promise<Appointment[]> {
+  async getAppointments(patientId?: string): Promise<Appointment[]> {
     if (!this.currentTenantId) throw new Error('No tenant context set');
 
     if (isMockMode) {
-      return [{
+      const mockAppointment: Appointment = {
         id: 'mock-apt-1',
         tenant_id: this.currentTenantId,
         patient_id: 'mock-patient-1',
@@ -552,13 +539,21 @@ class MultiTenantSupabaseService {
         payment_status: 'paid',
         created_at: new Date().toISOString(),
         updated_at: new Date().toISOString()
-      }];
+      };
+      if (patientId && mockAppointment.patient_id !== patientId) return [];
+      return [mockAppointment];
     }
 
-    const { data, error } = await supabase
+    let query = supabase
       .from('quantumhealth_appointments')
       .select('*')
       .eq('tenant_id', this.currentTenantId);
+
+    if (patientId) {
+      query = query.eq('patient_id', patientId);
+    }
+
+    const { data, error } = await query;
 
     if (error) {
       console.error('Error fetching appointments:', error);
