@@ -8,7 +8,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { useToast } from '@/hooks/use-toast';
 import { User, Stethoscope, Save, ArrowLeft } from 'lucide-react';
-import { supabase } from '@/services/supabaseService';
+import { supabase, multiTenantService } from '@/services/supabaseService';
 
 interface Doctor {
   id: string;
@@ -64,28 +64,23 @@ const AddDoctor: React.FC = () => {
     setIsLoading(true);
 
     try {
-      // Insert doctor into quantumhealth_doctor_profiles table
-      const { data, error } = await supabase
-        .from('quantumhealth_doctor_profiles')
-        .insert({
-          first_name: doctor.first_name,
-          last_name: doctor.last_name,
-          email: doctor.email,
-          phone: doctor.phone,
-          specialization: doctor.specialization,
-          license_number: doctor.license_number,
-          experience_years: doctor.experience_years,
-          qualifications: doctor.qualifications,
-          consultation_fee: doctor.consultation_fee,
-          bio: doctor.bio,
-          tenant_id: 'quantumhealth', // Default tenant for now
-          is_active: true
-        })
-        .select()
-        .single();
+      // Insert doctor using the centralized multi-tenant service
+      const newDoctor = await multiTenantService.createDoctor({
+        first_name: doctor.first_name,
+        last_name: doctor.last_name,
+        email: doctor.email,
+        phone: doctor.phone,
+        specialization: doctor.specialization,
+        license_number: doctor.license_number,
+        experience_years: doctor.experience_years,
+        qualifications: doctor.qualifications,
+        consultation_fee: doctor.consultation_fee,
+        bio: doctor.bio,
+        is_active: true
+      } as any); // cast to any temporarily to handle 'is_active' if it's missing from the type
 
-      if (error) {
-        throw error;
+      if (!newDoctor) {
+        throw new Error("Failed to create doctor profile");
       }
       
       toast({
