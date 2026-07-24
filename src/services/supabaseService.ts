@@ -166,10 +166,12 @@ if (supabaseUrl && !supabaseUrl.startsWith('https://')) {
   validSupabaseUrl = `https://${supabaseUrl}`;
 }
 
-// Check if API key looks valid (basic validation)
-const isValidApiKey = supabaseAnonKey && supabaseAnonKey.length > 50 && supabaseAnonKey.includes('.');
-if (!isValidApiKey) {
-  console.warn('Invalid Supabase API key format. Using mock mode for development.');
+// Check if API key looks valid (jwt format)
+const isValidApiKey = Boolean(supabaseAnonKey && supabaseAnonKey.length > 50 && supabaseAnonKey.includes('.'));
+export const isMockMode = !isValidApiKey || import.meta.env.DEV && !isValidApiKey;
+
+if (isMockMode) {
+  console.warn('Invalid or missing Supabase API key format. Using MOCK MODE for development.');
 }
 
 export const supabase = createClient(
@@ -187,6 +189,29 @@ class MultiTenantSupabaseService {
    */
   async setTenantContext(tenantSlug: string): Promise<Tenant | null> {
     try {
+      if (isMockMode) {
+        console.warn('Mock Mode active: Skipping network request for tenant context');
+        const mockTenant: Tenant = {
+          id: 'mock-tenant-id',
+          name: 'QuantumHealth',
+          slug: 'quantumhealth',
+          domain: 'quantumhealth.quantum-climb.com',
+          created_at: new Date().toISOString(),
+          updated_at: new Date().toISOString(),
+          is_active: true,
+          plan: 'enterprise',
+          settings: {
+            theme: { primary_color: '#14b8a6', secondary_color: '#22c55e', logo_url: '/assets/QuantumHealth_Logo.png' },
+            features: { reports: true, messaging: true, appointments: true, analytics: true, integrations: true },
+            limits: { max_users: 1000, max_storage_gb: 100, max_api_calls_per_day: 100000 }
+          },
+          metadata: { industry: 'healthcare', country: 'US', timezone: 'UTC', language: 'en' }
+        };
+        this.currentTenant = mockTenant;
+        this.currentTenantId = mockTenant.id;
+        return mockTenant;
+      }
+
       // For public tenant lookup, we need to use the service role key
       // First, try with anonymous access for public tenant info
       const { data: tenant, error } = await supabase
@@ -197,9 +222,7 @@ class MultiTenantSupabaseService {
         .single();
 
       if (error) {
-        // If we get a 401, the tenant table requires authentication
-        // For now, let's create a mock tenant for development
-        console.warn('Tenant lookup failed, using mock tenant for development:', error);
+        console.warn('Tenant lookup failed:', error);
         
         const mockTenant: Tenant = {
           id: 'mock-tenant-id',
@@ -267,8 +290,27 @@ class MultiTenantSupabaseService {
 
   // ===== PATIENT OPERATIONS =====
   async getPatients(): Promise<PatientProfile[]> {
-    if (!this.currentTenantId) {
-      throw new Error('No tenant context set');
+    if (!this.currentTenantId) throw new Error('No tenant context set');
+
+    if (isMockMode) {
+      return [{
+        id: 'mock-patient-1',
+        tenant_id: this.currentTenantId,
+        user_id: 'mock-user-1',
+        first_name: 'John',
+        last_name: 'Doe',
+        email: 'john.doe@example.com',
+        phone: '+1-555-0124',
+        date_of_birth: '1985-03-15',
+        gender: 'male',
+        address: { street: '123 Health St', city: 'Wellness City' },
+        emergency_contact: { name: 'Jane Doe', phone: '+1-555-0125' },
+        medical_history: { conditions: ['Hypertension'] },
+        allergies: ['Penicillin'],
+        medications: ['Lisinopril'],
+        created_at: new Date().toISOString(),
+        updated_at: new Date().toISOString()
+      }];
     }
 
     try {
@@ -279,30 +321,6 @@ class MultiTenantSupabaseService {
 
       if (error) {
         console.error('Error fetching patients:', error);
-        // Return mock data in development if database access fails
-        if (import.meta.env.DEV) {
-          console.warn('Returning mock patient data due to database access error');
-          return [
-            {
-              id: 'mock-patient-1',
-              tenant_id: this.currentTenantId,
-              user_id: 'mock-user-1',
-              first_name: 'John',
-              last_name: 'Doe',
-              email: 'john.doe@example.com',
-              phone: '+1-555-0124',
-              date_of_birth: '1985-03-15',
-              gender: 'male',
-              address: { street: '123 Health St', city: 'Wellness City' },
-              emergency_contact: { name: 'Jane Doe', phone: '+1-555-0125' },
-              medical_history: { conditions: ['Hypertension'] },
-              allergies: ['Penicillin'],
-              medications: ['Lisinopril'],
-              created_at: new Date().toISOString(),
-              updated_at: new Date().toISOString()
-            }
-          ];
-        }
         return [];
       }
 
@@ -314,9 +332,8 @@ class MultiTenantSupabaseService {
   }
 
   async getPatientById(id: string): Promise<PatientProfile | null> {
-    if (!this.currentTenantId) {
-      throw new Error('No tenant context set');
-    }
+    if (!this.currentTenantId) throw new Error('No tenant context set');
+    if (isMockMode) return (await this.getPatients())[0] || null;
 
     const { data, error } = await supabase
       .from('quantumhealth_patient_profiles')
@@ -334,8 +351,15 @@ class MultiTenantSupabaseService {
   }
 
   async createPatient(patientData: Omit<PatientProfile, 'id' | 'tenant_id' | 'created_at' | 'updated_at'>): Promise<PatientProfile | null> {
-    if (!this.currentTenantId) {
-      throw new Error('No tenant context set');
+    if (!this.currentTenantId) throw new Error('No tenant context set');
+    if (isMockMode) {
+      return {
+        ...patientData,
+        id: 'mock-new-patient-' + Date.now(),
+        tenant_id: this.currentTenantId,
+        created_at: new Date().toISOString(),
+        updated_at: new Date().toISOString()
+      } as PatientProfile;
     }
 
     const { data, error } = await supabase
@@ -357,8 +381,23 @@ class MultiTenantSupabaseService {
 
   // ===== DOCTOR OPERATIONS =====
   async getDoctors(): Promise<DoctorProfile[]> {
-    if (!this.currentTenantId) {
-      throw new Error('No tenant context set');
+    if (!this.currentTenantId) throw new Error('No tenant context set');
+
+    if (isMockMode) {
+      return [{
+        id: 'mock-doctor-1',
+        tenant_id: this.currentTenantId,
+        user_id: 'mock-user-doc-1',
+        first_name: 'Sarah',
+        last_name: 'Johnson',
+        email: 'sarah.j@example.com',
+        phone: '+1-555-0199',
+        specialization: 'Cardiology',
+        experience_years: 12,
+        consultation_fee: 150,
+        created_at: new Date().toISOString(),
+        updated_at: new Date().toISOString()
+      }];
     }
 
     const { data, error } = await supabase
@@ -375,9 +414,8 @@ class MultiTenantSupabaseService {
   }
 
   async getDoctorById(id: string): Promise<DoctorProfile | null> {
-    if (!this.currentTenantId) {
-      throw new Error('No tenant context set');
-    }
+    if (!this.currentTenantId) throw new Error('No tenant context set');
+    if (isMockMode) return (await this.getDoctors())[0] || null;
 
     const { data, error } = await supabase
       .from('quantumhealth_doctor_profiles')
@@ -395,8 +433,15 @@ class MultiTenantSupabaseService {
   }
 
   async createDoctor(doctorData: Omit<DoctorProfile, 'id' | 'tenant_id' | 'created_at' | 'updated_at'>): Promise<DoctorProfile | null> {
-    if (!this.currentTenantId) {
-      throw new Error('No tenant context set');
+    if (!this.currentTenantId) throw new Error('No tenant context set');
+    if (isMockMode) {
+      return {
+        ...doctorData,
+        id: 'mock-new-doctor-' + Date.now(),
+        tenant_id: this.currentTenantId,
+        created_at: new Date().toISOString(),
+        updated_at: new Date().toISOString()
+      } as DoctorProfile;
     }
 
     const { data, error } = await supabase
@@ -418,8 +463,26 @@ class MultiTenantSupabaseService {
 
   // ===== MEDICAL REPORTS OPERATIONS =====
   async getMedicalReports(): Promise<MedicalReport[]> {
-    if (!this.currentTenantId) {
-      throw new Error('No tenant context set');
+    if (!this.currentTenantId) throw new Error('No tenant context set');
+
+    if (isMockMode) {
+      return [{
+        id: 'mock-report-1',
+        tenant_id: this.currentTenantId,
+        patient_id: 'mock-patient-1',
+        doctor_id: 'mock-doctor-1',
+        report_name: 'Blood Test Results',
+        report_type: 'lab',
+        category: 'Laboratory',
+        file_url: 'https://example.com/reports/blood-test.pdf',
+        file_size_bytes: 1024000,
+        file_format: 'PDF',
+        status: 'reviewed',
+        description: 'Complete blood count and metabolic panel',
+        metadata: { lab: 'Quantum Labs' },
+        created_at: new Date().toISOString(),
+        updated_at: new Date().toISOString()
+      }];
     }
 
     try {
@@ -430,29 +493,6 @@ class MultiTenantSupabaseService {
 
       if (error) {
         console.error('Error fetching medical reports:', error);
-        // Return mock data in development if database access fails
-        if (import.meta.env.DEV) {
-          console.warn('Returning mock medical report data due to database access error');
-          return [
-            {
-              id: 'mock-report-1',
-              tenant_id: this.currentTenantId,
-              patient_id: 'mock-patient-1',
-              doctor_id: 'mock-doctor-1',
-              report_name: 'Blood Test Results',
-              report_type: 'lab',
-              category: 'Laboratory',
-              file_url: 'https://example.com/reports/blood-test.pdf',
-              file_size_bytes: 1024000,
-              file_format: 'PDF',
-              status: 'reviewed',
-              description: 'Complete blood count and metabolic panel',
-              metadata: { lab: 'Quantum Labs' },
-              created_at: new Date().toISOString(),
-              updated_at: new Date().toISOString()
-            }
-          ];
-        }
         return [];
       }
 
@@ -464,8 +504,15 @@ class MultiTenantSupabaseService {
   }
 
   async createMedicalReport(reportData: Omit<MedicalReport, 'id' | 'tenant_id' | 'created_at' | 'updated_at'>): Promise<MedicalReport | null> {
-    if (!this.currentTenantId) {
-      throw new Error('No tenant context set');
+    if (!this.currentTenantId) throw new Error('No tenant context set');
+    if (isMockMode) {
+      return {
+        ...reportData,
+        id: 'mock-new-report-' + Date.now(),
+        tenant_id: this.currentTenantId,
+        created_at: new Date().toISOString(),
+        updated_at: new Date().toISOString()
+      } as MedicalReport;
     }
 
     const { data, error } = await supabase
@@ -487,8 +534,25 @@ class MultiTenantSupabaseService {
 
   // ===== APPOINTMENTS OPERATIONS =====
   async getAppointments(): Promise<Appointment[]> {
-    if (!this.currentTenantId) {
-      throw new Error('No tenant context set');
+    if (!this.currentTenantId) throw new Error('No tenant context set');
+
+    if (isMockMode) {
+      return [{
+        id: 'mock-apt-1',
+        tenant_id: this.currentTenantId,
+        patient_id: 'mock-patient-1',
+        doctor_id: 'mock-doctor-1',
+        appointment_date: new Date(Date.now() + 86400000).toISOString(),
+        appointment_time: '10:00 AM',
+        duration_minutes: 30,
+        appointment_type: 'routine_check',
+        status: 'scheduled',
+        notes: 'Annual checkup',
+        consultation_fee: 150,
+        payment_status: 'paid',
+        created_at: new Date().toISOString(),
+        updated_at: new Date().toISOString()
+      }];
     }
 
     const { data, error } = await supabase
@@ -505,8 +569,15 @@ class MultiTenantSupabaseService {
   }
 
   async createAppointment(appointmentData: Omit<Appointment, 'id' | 'tenant_id' | 'created_at' | 'updated_at'>): Promise<Appointment | null> {
-    if (!this.currentTenantId) {
-      throw new Error('No tenant context set');
+    if (!this.currentTenantId) throw new Error('No tenant context set');
+    if (isMockMode) {
+      return {
+        ...appointmentData,
+        id: 'mock-new-apt-' + Date.now(),
+        tenant_id: this.currentTenantId,
+        created_at: new Date().toISOString(),
+        updated_at: new Date().toISOString()
+      } as Appointment;
     }
 
     const { data, error } = await supabase
@@ -527,8 +598,14 @@ class MultiTenantSupabaseService {
   }
 
   async updateAppointment(id: string, updates: Partial<Omit<Appointment, 'id' | 'tenant_id' | 'created_at' | 'updated_at'>>): Promise<Appointment | null> {
-    if (!this.currentTenantId) {
-      throw new Error('No tenant context set');
+    if (!this.currentTenantId) throw new Error('No tenant context set');
+    if (isMockMode) {
+      return {
+        ...(await this.getAppointments())[0],
+        ...updates,
+        id,
+        updated_at: new Date().toISOString()
+      } as Appointment;
     }
 
     const { data, error } = await supabase
